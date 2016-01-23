@@ -7,6 +7,8 @@
 
 namespace Drupal\photoswipe;
 
+use Drupal\Core\Config\ConfigFactoryInterface;
+
 /**
  * Photoswipe asset manager.
  */
@@ -34,7 +36,7 @@ class PhotoswipeAssetsManager implements PhotoswipeAssetsManagerInterface {
   /**
    * {@inheritdoc}
    */
-  public function attach(&$element) {
+  public function attach(array &$element) {
     // We only need to load only once per pace.
     if (!$this->attached) {
       // Add the library of Photoswipe assets
