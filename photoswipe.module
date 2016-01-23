@@ -108,7 +108,7 @@ function photoswipe_page_attachments(array &$attachments) {
   $is_admin = \Drupal::service('router.admin_context')->isAdminRoute();
 
   if (\Drupal::config('photoswipe.settings')->get('photoswipe_always_load_non_admin') && $is_admin) {
-    photoswipe_load_assets($attachments);
+    \Drupal::service('photoswipe.assets_manager')->attach($attachments);
   }
 }
 
@@ -117,45 +117,9 @@ function photoswipe_page_attachments(array &$attachments) {
  */
 function photoswipe_page_bottom(array &$page_bottom) {
   // Load the Container HTML at the bottom of the page
-  if (photoswipe_assets_loaded()) {
+  if (\Drupal::service('photoswipe.assets_manager')->isAttached()) {
     $page_bottom['photoswipe'] = array(
       '#theme' => 'photoswipe_container',
     );
   }
-}
-
-/**
- * Loads photoswipe assets.
- */
-function photoswipe_load_assets(array &$attachments) {
-  if (!photoswipe_assets_loaded()) {
-    // Add the library of Photoswipe assets
-    $attachments['#attached']['library'][] = 'photoswipe/photoswipe';
-    // Load initialization file
-    $attachments['#attached']['library'][] = 'photoswipe/photoswipe.init';
-
-    // Add photoswipe js settings.
-    $settings = \Drupal::config('photoswipe.settings')->get('options');
-    $attachments['#attached']['drupalSettings']['photoswipe']['options'] = $settings;
-
-    photoswipe_assets_loaded(TRUE);
-  }
-}
-
-/**
- * Stores whether photoswipe assets has been loaded in the same request.
- *
- * @param bool $loaded
- *   (Optional) Set whether assets are loaded or not.
- *
- * @return bool
- */
-function photoswipe_assets_loaded($loaded = NULL) {
-  $status = &drupal_static(__FUNCTION__);
-
-  if ($loaded) {
-    $status = $loaded;
-  }
-
-  return $status;
 }
