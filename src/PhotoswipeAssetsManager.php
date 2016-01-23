@@ -40,12 +40,12 @@ class PhotoswipeAssetsManager implements PhotoswipeAssetsManagerInterface {
     // We only need to load only once per pace.
     if (!$this->attached) {
       // Add the library of Photoswipe assets
-      $attachments['#attached']['library'][] = 'photoswipe/photoswipe';
+      $element['#attached']['library'][] = 'photoswipe/photoswipe';
       // Load initialization file
-      $attachments['#attached']['library'][] = 'photoswipe/photoswipe.init';
+      $element['#attached']['library'][] = 'photoswipe/photoswipe.init';
 
       // Add photoswipe js settings.
-      $attachments['#attached']['drupalSettings']['photoswipe']['options'] = $this->config->get('options');
+      $element['#attached']['drupalSettings']['photoswipe']['options'] = $this->config->get('options');
 
       $this->attached = TRUE;
     }
