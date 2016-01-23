@@ -10,8 +10,7 @@ use Drupal\Core\Routing\RouteMatchInterface;
 /**
  * The minimum PhotoSwipe version we support.
  */
-define('PHOTOSWIPE_MIN_PLUGIN_VERSION', '4.0.0');
-
+const PHOTOSWIPE_MIN_PLUGIN_VERSION = '5.5.9';
 
 /**
  * Implements hook_theme().
