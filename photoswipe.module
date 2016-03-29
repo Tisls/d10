@@ -46,60 +46,6 @@ function photoswipe_help($route_name, RouteMatchInterface $route_match) {
 }
 
 /**
- * Implements hook_libraries_info().
- */
-function photoswipe_libraries_info() {
-  $libraries['photoswipe'] = array(
-    'name' => 'Photoswipe plugin',
-    'vendor url' => 'http://photoswipe.com',
-    'download url' => 'https://github.com/dimsemenov/PhotoSwipe/archive/v4.1.0.zip',
-    'path' => 'dist',
-    'version arguments' => array(
-      'file' => 'dist/photoswipe.min.js',
-      'pattern' => '@(?i:PhotoSwipe)\s-\sv?([0-9\.a-z]+)@',
-      'lines' => 5,
-    ),
-    'files' => array(
-      'js' => array(
-        'photoswipe.min.js',
-        'photoswipe-ui-default.min.js'
-      ),
-      'css' => array(
-        'photoswipe.css',
-        'default-skin/default-skin.css'
-      )
-    ),
-    'variants' => array(
-      'minified' => array(
-        'files' => array(
-          'js' => array(
-            'photoswipe.min.js',
-            'photoswipe-ui-default.min.js'
-          ),
-          'css' => array(
-            'photoswipe.css'
-          )
-        ),
-      ),
-      'source' => array(
-        'files' => array(
-          'js' => array(
-            'photoswipe.js',
-            'photoswipe-ui-default.js'
-          ),
-          'css' => array(
-            'photoswipe.css',
-            'default-skin/default-skin.css'
-          )
-        ),
-      ),
-    ),
-  );
-
-  return $libraries;
-}
-
-/**
  * Implements hook_page_attachments().
  */
 function photoswipe_page_attachments(array &$attachments) {
