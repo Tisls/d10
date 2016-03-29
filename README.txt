@@ -8,24 +8,20 @@ particular swiping to the next picture)!
 INSTALLATION
 ============
 
-1. Download and install the "Libraries API" module: uncompress the "libraries"
-folder, copy it to your "modules" directory, and enable it.
-http://drupal.org/project/libraries
+1. Download and install this module as usual. For more info visit
+  https://www.drupal.org/documentation/install/modules-themes/modules-8
 
-2. Place the "photoswipe" folder in your "modules" directory (e.g.
-sites/all/modules/photoswipe).
+2. Install third party PhotoSwipe software:
+  Download PhotoSwipe 4.x source from PhotoSwipe website
+  (e.g. https://github.com/dimsemenov/PhotoSwipe/archive/v4.1.0.zip)
+  Unarchive it into your "libraries" directory (e.g. /libraries).
+  You may need to create the "libraries" directory first.
+  Rename it to "photoswipe" (lower case).
+  NB: Relying on libraries module to locate 'photoswipe' folder allows you to place
+  it in a site specific (e.g. sites/mysite/libraries) or default folder
+  (e.g. sites/all/libraries). Site-specific versions are selected preferentially.
 
-3. Install third party PhotoSwipe software
-     Download PhotoSwipe 4.x source from PhotoSwipe website
-     (e.g. https://github.com/dimsemenov/PhotoSwipe/archive/v4.1.0.zip)
-     Unarchive it into your "libraries" directory (e.g. /libraries).
-     You may need to create the "libraries" directory first.
-     Rename it to "photoswipe" (lower case).
-NB: Relying on libraries module to locate 'photoswipe' folder allows you to place
-it in a site specific (e.g. sites/mysite/libraries) or default folder
-(e.g. sites/all/libraries). Site-specific versions are selected preferentially.
-
-4. Enable the PhotoSwipe module.
+3. Enable the PhotoSwipe module.
 
 
 USAGE
@@ -53,10 +49,5 @@ e.g.
 <a href="/images/test_img.png" class="photoswipe" data-size="640x400">
  <img src="/images/test_img.png" alt="Test Image" />
 </a>
-It might be needed to load photoswipe assets in case they are not already loaded
-To do so just call
-photoswipe_load_assets();
-Or force them to load on all non-admin pages
-\Drupal::config('photoswipe.settings')
-  ->set('photoswipe_always_load_non_admin', TRUE)
-  ->save();
+Doing this means that you should probably enable loading the library on all non
+admin pages in admin/config/media/photoswipe.
