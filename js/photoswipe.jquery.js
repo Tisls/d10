@@ -16,6 +16,11 @@
 
       var $galleries = $('.photoswipe-gallery', context);
       if ($galleries.length) {
+        // if body haven't special container for show photoswipe gallery append it.
+        if('container' in settings.photoswipe && !$('.pswp').length){
+          $('body').append(settings.photoswipe.container);
+        }
+
         // loop through all gallery elements and bind events
         $galleries.each( function (index) {
           var $gallery = $(this);

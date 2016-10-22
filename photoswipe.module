@@ -56,15 +56,3 @@ function photoswipe_page_attachments(array &$attachments) {
     \Drupal::service('photoswipe.assets_manager')->attach($attachments);
   }
 }
-
-/**
- * Implements hook_page_bottom().
- */
-function photoswipe_page_bottom(array &$page_bottom) {
-  // Load the Container HTML at the bottom of the page
-  if (\Drupal::service('photoswipe.assets_manager')->isAttached()) {
-    $page_bottom['photoswipe'] = array(
-      '#theme' => 'photoswipe_container',
-    );
-  }
-}
