@@ -28,8 +28,8 @@ function photoswipe_requirements($phase) {
             '@a' => PHOTOSWIPE_MIN_PLUGIN_VERSION
           )),
           'severity' => REQUIREMENT_ERROR,
-          'description' => t('!error You need to download the <a href=":url">Photoswipe plugin</a>, extract the archive and place the photoswipe directory in the %path directory on your server.', array(
-            '!error' => $error_message,
+          'description' => t('@error You need to download the <a href=":url">Photoswipe plugin</a>, extract the archive and place the photoswipe directory in the %path directory on your server.', array(
+            '@error' => $error_message,
             ':url' => $library['download url'],
             '%path' => 'libraries'
           )),
