@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains Drupal\photoswipe\PhotoswipeAssetsManagerInterface.
- */
-
 namespace Drupal\photoswipe;
 
 /**

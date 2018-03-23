@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains Drupal\photoswipe\PhotoswipeAssetsManager.
- */
-
 namespace Drupal\photoswipe;
 
 use Drupal\Core\Config\ConfigFactoryInterface;

@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\photoswipe\Form\PhotoswipeAdminSettings.
- */
-
 namespace Drupal\photoswipe\Form;
 
 use Drupal\Core\Form\ConfigFormBase;

@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\photoswipe\Plugin\Field\FieldFormatter\PhotoswipeFieldFormatter.
- */
-
 namespace Drupal\photoswipe\Plugin\Field\FieldFormatter;
 
 use Drupal\Core\Field\FieldItemListInterface;
