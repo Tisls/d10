@@ -65,7 +65,7 @@ class PhotoswipeAssetsManager implements PhotoswipeAssetsManagerInterface {
 
       // Add photoswipe container with class="pswp".
       $template = ["#theme" => 'photoswipe_container'];
-      $element['#attached']['drupalSettings']['photoswipe']['container'] = $this->renderer->render($template);
+      $element['#attached']['drupalSettings']['photoswipe']['container'] = $this->renderer->renderPlain($template);
 
       $this->attached = TRUE;
     }
