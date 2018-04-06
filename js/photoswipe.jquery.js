@@ -72,7 +72,7 @@
       }
 
       // get the index of the clicked element
-      index = clickedListItem.index('.photoswipe');
+      index = $clickedGallery.find('.photoswipe').index(clickedListItem);
       if (index >= 0) {
         // open PhotoSwipe if valid index found
         Drupal.behaviors.photoswipe.openPhotoSwipe(index, $clickedGallery);
