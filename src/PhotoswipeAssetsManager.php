@@ -55,7 +55,10 @@ class PhotoswipeAssetsManager implements PhotoswipeAssetsManagerInterface {
     $element['#attached']['library'][] = 'photoswipe/photoswipe.init';
 
     // Add photoswipe js settings.
-    $element['#attached']['drupalSettings']['photoswipe']['options'] = $this->config->get('options');
+    $options = $this->config->get('options');
+    // Allow other modules to alter / extend the options to pass to photoswipe JavaScript.
+    \Drupal::moduleHandler()->alter('photoswipe_js_options', $options);
+    $element['#attached']['drupalSettings']['photoswipe']['options'] = $options;
 
     // Add photoswipe container with class="pswp".
     $template = ["#theme" => 'photoswipe_container'];
