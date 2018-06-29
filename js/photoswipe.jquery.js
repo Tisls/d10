@@ -69,7 +69,7 @@
       }
 
       // get the index of the clicked element
-      var index = $clickedGallery.find('.photoswipe').index(clickedListItem);
+      var index = $clickedGallery.find('.photoswipe').index($clickedListItem);
       if (index >= 0) {
         e.preventDefault ? e.preventDefault() : e.returnValue = false;
         // open PhotoSwipe if valid index found
