@@ -138,9 +138,6 @@ class PhotoswipeFieldFormatter extends FormatterBase {
     $settings = $this->getSettings();
 
     if (!empty($items)) {
-      $elements = array(
-        '#attributes' => array('class' => array('photoswipe-gallery')),
-      );
       \Drupal::service('photoswipe.assets_manager')->attach($elements);
     }
 
