@@ -61,9 +61,11 @@ class PhotoswipeFieldFormatter extends FormatterBase {
       'node_title' => t('Node Title'),
     );
     // Add the other node fields as options
-    foreach ($form['#fields'] as $node_field) {
-      if ($node_field != $this->fieldDefinition->getName()) {
-        $caption_options[$node_field] = $node_field;
+    if(!empty($form['#fields'])){
+      foreach ($form['#fields'] as $node_field) {
+        if ($node_field != $this->fieldDefinition->getName()) {
+          $caption_options[$node_field] = $node_field;
+        }
       }
     }
 
