@@ -78,7 +78,11 @@ function template_preprocess_photoswipe_image_formatter(&$variables) {
         $caption = $title;
         break;
       case 'node_title':
-        $caption = $node->title->value;
+        if(!empty($node->title)){
+          $caption = $node->title->value;
+        } else {
+          $caption = $alt;
+        }
         break;
       default:
         $field_view = $node->{$caption_setting}->view();
