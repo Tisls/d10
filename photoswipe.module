@@ -39,6 +39,7 @@ function photoswipe_theme() {
       'variables' => array(
         'item' => NULL,
         'display_settings' => array(),
+        'delta' => NULL,
       ),
       'file' => 'photoswipe.theme.inc',
     ),

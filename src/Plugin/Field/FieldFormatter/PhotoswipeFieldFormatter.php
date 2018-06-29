@@ -23,6 +23,7 @@ class PhotoswipeFieldFormatter extends FormatterBase {
    */
   public static function defaultSettings() {
     return array(
+      'photoswipe_node_style_first' => '',
       'photoswipe_node_style' => '',
       'photoswipe_image_style' => '',
       'photoswipe_caption' => '',
@@ -37,6 +38,14 @@ class PhotoswipeFieldFormatter extends FormatterBase {
     $image_styles = image_style_options(FALSE);
     $image_styles_hide = $image_styles;
     $image_styles_hide['hide'] = $this->t('Hide (do not display image)');
+    $element['photoswipe_node_style_first'] = array(
+      '#title' => t('Node image style for first image'),
+      '#type' => 'select',
+      '#default_value' => $this->getSetting('photoswipe_node_style_first'),
+      '#empty_option' => t('No special style.'),
+      '#options' => $image_styles_hide,
+      '#description' => t('Image style to use in the content for the first image.'),
+    );
     $element['photoswipe_node_style'] = array(
       '#title' => $this->t('Node image style'),
       '#type' => 'select',
@@ -107,6 +116,14 @@ class PhotoswipeFieldFormatter extends FormatterBase {
       $summary[] = $this->t('Node image style: Original image');
     }
 
+    if (isset($image_styles[$settings['photoswipe_node_style_first']])) {
+      $summary[] = t('Node image style of first image: @style', array('@style' => $image_styles[$settings['photoswipe_node_style_first']]));
+    } else if ($this->getSetting('photoswipe_node_style_first') == 'hide') {
+      $summary[] = t('Node image style of first image: Hide');
+    } else {
+      $summary[] = t('Node image style of first image: Original image');
+    }
+
     if (isset($image_styles[$this->getSetting('photoswipe_image_style')])) {
       $summary[] = $this->t('Photoswipe image style: @style', array('@style' => $image_styles[$this->getSetting('photoswipe_image_style')]));
     }
@@ -148,6 +165,7 @@ class PhotoswipeFieldFormatter extends FormatterBase {
         '#theme' => 'photoswipe_image_formatter',
         '#item' => $item,
         '#display_settings' => $settings,
+        '#delta' => $delta,
       );
     }
 
