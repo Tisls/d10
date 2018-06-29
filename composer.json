@@ -35,7 +35,8 @@
       }
     }
   ],
-  "require": {
-    "bower-asset/photoswipe": "^4.1"
+  "require": {},
+  "suggest": {
+    "bower-asset/photoswipe": "Required to user drupal/photoswipe."
   }
 }
