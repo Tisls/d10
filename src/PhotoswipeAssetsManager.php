@@ -48,22 +48,19 @@ class PhotoswipeAssetsManager implements PhotoswipeAssetsManagerInterface {
    * {@inheritdoc}
    */
   public function attach(array &$element) {
-    // We only need to load only once per pace.
-    if (!$this->attached) {
-      // Add the library of Photoswipe assets.
-      $element['#attached']['library'][] = 'photoswipe/photoswipe';
-      // Load initialization file.
-      $element['#attached']['library'][] = 'photoswipe/photoswipe.init';
 
-      // Add photoswipe js settings.
-      $element['#attached']['drupalSettings']['photoswipe']['options'] = $this->config->get('options');
+    // Add the library of Photoswipe assets.
+    $element['#attached']['library'][] = 'photoswipe/photoswipe';
+    // Load initialization file.
+    $element['#attached']['library'][] = 'photoswipe/photoswipe.init';
 
-      // Add photoswipe container with class="pswp".
-      $template = ["#theme" => 'photoswipe_container'];
-      $element['#attached']['drupalSettings']['photoswipe']['container'] = $this->renderer->renderPlain($template);
+    // Add photoswipe js settings.
+    $element['#attached']['drupalSettings']['photoswipe']['options'] = $this->config->get('options');
 
-      $this->attached = TRUE;
-    }
+    // Add photoswipe container with class="pswp".
+    $template = ["#theme" => 'photoswipe_container'];
+    $element['#attached']['drupalSettings']['photoswipe']['container'] = $this->renderer->renderPlain($template);
+    $this->attached = TRUE;
   }
 
   /**
