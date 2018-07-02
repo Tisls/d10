@@ -6,13 +6,12 @@
  */
 
 /**
- * Provides the ability to override Photoswipe settings passed to JavaScript as
- * photoSwipeOptions.
+ * Provides the ability to override Photoswipe settings passed to JS as Options.
  *
- * @param $settings
- *  Default Photoswipe settings array.
+ * @param array $settings
+ *   Default Photoswipe settings array.
  */
-function hook_photoswipe_js_options_alter(&$settings) {
+function hook_photoswipe_js_options_alter(array &$settings) {
   // Disable sharing links.
   $settings['shareEl'] = FALSE;
 
@@ -25,19 +24,19 @@ function hook_photoswipe_js_options_alter(&$settings) {
     ],
     [
       'id' =>
-        'twitter',
+      'twitter',
       'label' => t('Tweet'),
       'url' => 'https://twitter.com/intent/tweet?text={{text}}&url={{url}}',
     ],
     [
       'id' =>
-        'pinterest',
+      'pinterest',
       'label' => t('Pin it'),
       'url' => 'http://www.pinterest.com/pin/create/button/?url={{url}}&media={{image_url}}&description={{text}}',
     ],
     [
       'id' =>
-        'download',
+      'download',
       'label' => t('Download image'),
       'url' => '{{raw_image_url}}',
       'download' => TRUE,

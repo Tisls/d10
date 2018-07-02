@@ -18,17 +18,18 @@ use Drupal\Core\Form\FormStateInterface;
  * )
  */
 class PhotoswipeFieldFormatter extends FormatterBase {
+
   /**
    * {@inheritdoc}
    */
   public static function defaultSettings() {
-    return array(
+    return [
       'photoswipe_node_style_first' => '',
       'photoswipe_node_style' => '',
       'photoswipe_image_style' => '',
       'photoswipe_caption' => '',
       'photoswipe_view_mode' => '',
-    ) + parent::defaultSettings();
+    ] + parent::defaultSettings();
   }
 
   /**
@@ -38,39 +39,39 @@ class PhotoswipeFieldFormatter extends FormatterBase {
     $image_styles = image_style_options(FALSE);
     $image_styles_hide = $image_styles;
     $image_styles_hide['hide'] = $this->t('Hide (do not display image)');
-    $element['photoswipe_node_style_first'] = array(
-      '#title' => t('Node image style for first image'),
+    $element['photoswipe_node_style_first'] = [
+      '#title' => $this->t('Node image style for first image'),
       '#type' => 'select',
       '#default_value' => $this->getSetting('photoswipe_node_style_first'),
-      '#empty_option' => t('No special style.'),
+      '#empty_option' => $this->t('No special style.'),
       '#options' => $image_styles_hide,
-      '#description' => t('Image style to use in the content for the first image.'),
-    );
-    $element['photoswipe_node_style'] = array(
+      '#description' => $this->t('Image style to use in the content for the first image.'),
+    ];
+    $element['photoswipe_node_style'] = [
       '#title' => $this->t('Node image style'),
       '#type' => 'select',
       '#default_value' => $this->getSetting('photoswipe_node_style'),
       '#empty_option' => $this->t('None (original image)'),
       '#options' => $image_styles_hide,
       '#description' => $this->t('Image style to use in the node.'),
-    );
-    $element['photoswipe_image_style'] = array(
+    ];
+    $element['photoswipe_image_style'] = [
       '#title' => $this->t('Photoswipe image style'),
       '#type' => 'select',
       '#default_value' => $this->getSetting('photoswipe_image_style'),
       '#empty_option' => $this->t('None (original image)'),
       '#options' => $image_styles,
       '#description' => $this->t('Image style to use in the Photoswipe.'),
-    );
+    ];
 
-    // Set our caption options
-    $caption_options = array(
-      'title' => t('Image Title Tag'),
-      'alt' => t('Image Alt Tag'),
-      'node_title' => t('Node Title'),
-    );
-    // Add the other node fields as options
-    if(!empty($form['#fields'])){
+    // Set our caption options.
+    $caption_options = [
+      'title' => $this->t('Image Title Tag'),
+      'alt' => $this->t('Image Alt Tag'),
+      'node_title' => $this->t('Node Title'),
+    ];
+    // Add the other node fields as options.
+    if (!empty($form['#fields'])) {
       foreach ($form['#fields'] as $node_field) {
         if ($node_field != $this->fieldDefinition->getName()) {
           $caption_options[$node_field] = $node_field;
@@ -78,19 +79,19 @@ class PhotoswipeFieldFormatter extends FormatterBase {
       }
     }
 
-    $element['photoswipe_caption'] = array(
+    $element['photoswipe_caption'] = [
       '#title' => $this->t('Photoswipe image caption'),
       '#type' => 'select',
       '#default_value' => $this->getSetting('photoswipe_caption'),
       '#options' => $caption_options,
       '#description' => $this->t('Field that should be used for the caption.'),
-    );
+    ];
 
-    // Add the current view mode so we can control the view mode for node fields.
-    $element['photoswipe_view_mode'] = array(
+    // Add the current view mode so we can control view mode for node fields.
+    $element['photoswipe_view_mode'] = [
       '#type' => 'hidden',
       '#value' => $this->viewMode,
-    );
+    ];
 
     return $element + parent::settingsForm($form, $form_state);
   }
@@ -107,9 +108,9 @@ class PhotoswipeFieldFormatter extends FormatterBase {
     // Styles could be lost because of enabled/disabled modules that defines
     // their styles in code.
     if (isset($image_styles[$this->getSetting('photoswipe_node_style')])) {
-      $summary[] = $this->t('Node image style: @style', array('@style' => $image_styles[$this->getSetting('photoswipe_node_style')]));
+      $summary[] = $this->t('Node image style: @style', ['@style' => $image_styles[$this->getSetting('photoswipe_node_style')]]);
     }
-    else if ($this->getSetting('photoswipe_node_style') == 'hide') {
+    elseif ($this->getSetting('photoswipe_node_style') == 'hide') {
       $summary[] = $this->t('Node image style: Hide');
     }
     else {
@@ -117,33 +118,35 @@ class PhotoswipeFieldFormatter extends FormatterBase {
     }
 
     if (isset($image_styles[$settings['photoswipe_node_style_first']])) {
-      $summary[] = t('Node image style of first image: @style', array('@style' => $image_styles[$settings['photoswipe_node_style_first']]));
-    } else if ($this->getSetting('photoswipe_node_style_first') == 'hide') {
-      $summary[] = t('Node image style of first image: Hide');
-    } else {
-      $summary[] = t('Node image style of first image: Original image');
+      $summary[] = $this->t('Node image style of first image: @style', ['@style' => $image_styles[$settings['photoswipe_node_style_first']]]);
+    }
+    elseif ($this->getSetting('photoswipe_node_style_first') == 'hide') {
+      $summary[] = $this->t('Node image style of first image: Hide');
+    }
+    else {
+      $summary[] = $this->t('Node image style of first image: Original image');
     }
 
     if (isset($image_styles[$this->getSetting('photoswipe_image_style')])) {
-      $summary[] = $this->t('Photoswipe image style: @style', array('@style' => $image_styles[$this->getSetting('photoswipe_image_style')]));
+      $summary[] = $this->t('Photoswipe image style: @style', ['@style' => $image_styles[$this->getSetting('photoswipe_image_style')]]);
     }
     else {
       $summary[] = $this->t('photoswipe image style: Original image');
     }
 
     if ($this->getSetting('photoswipe_caption')) {
-      $caption_options = array(
-        'alt' => t('Image Alt Tag'),
-        'title' => t('Image Title Tag'),
-        'node_title' => t('Node Title'),
-      );
+      $caption_options = [
+        'alt' => $this->t('Image Alt Tag'),
+        'title' => $this->t('Image Title Tag'),
+        'node_title' => $this->t('Node Title'),
+      ];
       if (array_key_exists($this->getSetting('photoswipe_caption'), $caption_options)) {
         $caption_setting = $caption_options[$this->getSetting('photoswipe_caption')];
       }
       else {
         $caption_setting = $this->getSetting('photoswipe_caption');
       }
-      $summary[] = $this->t('Photoswipe Caption: @field', array('@field' => $caption_setting));
+      $summary[] = $this->t('Photoswipe Caption: @field', ['@field' => $caption_setting]);
     }
 
     return $summary;
@@ -161,12 +164,12 @@ class PhotoswipeFieldFormatter extends FormatterBase {
     }
 
     foreach ($items as $delta => $item) {
-      $elements[$delta] = array(
+      $elements[$delta] = [
         '#theme' => 'photoswipe_image_formatter',
         '#item' => $item,
         '#display_settings' => $settings,
         '#delta' => $delta,
-      );
+      ];
     }
 
     return $elements;

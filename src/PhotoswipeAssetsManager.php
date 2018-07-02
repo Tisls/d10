@@ -56,7 +56,8 @@ class PhotoswipeAssetsManager implements PhotoswipeAssetsManagerInterface {
 
     // Add photoswipe js settings.
     $options = $this->config->get('options');
-    // Allow other modules to alter / extend the options to pass to photoswipe JavaScript.
+    // Allow other modules to alter / extend the options to pass to photoswipe
+    // JavaScript.
     \Drupal::moduleHandler()->alter('photoswipe_js_options', $options);
     $element['#attached']['drupalSettings']['photoswipe']['options'] = $options;
 
