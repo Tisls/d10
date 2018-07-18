@@ -45,10 +45,20 @@ function template_preprocess_photoswipe_image_formatter(array &$variables) {
     $image['#style_name'] = $settings['photoswipe_node_style_first'];
   }
 
+  // The image.factory service will check if our image is valid.
+  $image_file = \Drupal::service('image.factory')->get($uri);
+  if ($image_file->isValid()) {
+    $image_width = $image_file->getWidth();
+    $image_height = $image_file->getHeight();
+  }
+  else {
+    $image_width = $image_height = NULL;
+  }  
+
   $dimensions = [];
-  if (isset($item->width) && isset($item->height)) {
-    $image['#width'] = $dimensions['width'] = $item->width;
-    $image['#height'] = $dimensions['height'] = $item->height;
+  if (!empty($image_width) && !empty($image_height)) {
+    $image['#width'] = $dimensions['width'] = $image_width;
+    $image['#height'] = $dimensions['height'] = $image_height;    
   }
 
   // Create the path to the image that will show in Photoswipe.
