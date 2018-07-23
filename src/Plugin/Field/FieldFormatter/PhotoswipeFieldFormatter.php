@@ -5,6 +5,7 @@ namespace Drupal\photoswipe\Plugin\Field\FieldFormatter;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Field\FormatterBase;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\image\Entity\ImageStyle;
 
 /**
  * Plugin implementation of the 'photoswipe_field_formatter' formatter.
@@ -173,6 +174,57 @@ class PhotoswipeFieldFormatter extends FormatterBase {
     }
 
     return $elements;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function calculateDependencies() {
+    $dependencies = parent::calculateDependencies();
+    $style_ids = [];
+    $style_ids[] = $this->getSetting('photoswipe_node_style');
+    if (!empty($this->getSetting('photoswipe_node_style_first'))) {
+      $style_ids[] = $this->getSetting('photoswipe_node_style_first');
+    }
+    $style_ids[] = $this->getSetting('photoswipe_image_style');
+    /** @var \Drupal\image\ImageStyleInterface $style */
+    foreach ($style_ids as $style_id) {
+      if ($style_id && $style = ImageStyle::load($style_id)) {
+        // If this formatter uses a valid image style to display the image, add
+        // the image style configuration entity as dependency of this formatter.
+        $dependencies[$style->getConfigDependencyKey()][] = $style->getConfigDependencyName();
+      }
+    }
+    return $dependencies;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function onDependencyRemoval(array $dependencies) {
+    $changed = parent::onDependencyRemoval($dependencies);
+    $style_ids = [];
+    $style_ids['photoswipe_node_style'] = $this->getSetting('photoswipe_node_style');
+    if (!empty($this->getSetting('photoswipe_node_style_first'))) {
+      $style_ids['photoswipe_node_style_first'] = $this->getSetting('photoswipe_node_style_first');
+    }
+    $style_ids['photoswipe_image_style'] = $this->getSetting('photoswipe_image_style');
+    /** @var \Drupal\image\ImageStyleInterface $style */
+    foreach ($style_ids as $name => $style_id) {
+      if ($style_id && $style = ImageStyle::load($style_id)) {
+        if (!empty($dependencies[$style->getConfigDependencyKey()][$style->getConfigDependencyName()])) {
+          $replacement_id = $this->imageStyleStorage->getReplacementId($style_id);
+          // If a valid replacement has been provided in the storage, replace
+          // the image style with the replacement and signal that the formatter
+          // plugin settings were updated.
+          if ($replacement_id && ImageStyle::load($replacement_id)) {
+            $this->setSetting($name, $replacement_id);
+            $changed = TRUE;
+          }
+        }
+      }
+    }
+    return $changed;
   }
 
 }
