@@ -53,12 +53,12 @@ function template_preprocess_photoswipe_image_formatter(array &$variables) {
   }
   else {
     $image_width = $image_height = NULL;
-  }  
+  }
 
   $dimensions = [];
   if (!empty($image_width) && !empty($image_height)) {
     $image['#width'] = $dimensions['width'] = $image_width;
-    $image['#height'] = $dimensions['height'] = $image_height;    
+    $image['#height'] = $dimensions['height'] = $image_height;
   }
 
   // Create the path to the image that will show in Photoswipe.
