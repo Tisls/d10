@@ -67,9 +67,9 @@ class PhotoswipeFieldFormatter extends FormatterBase {
 
     // Set our caption options.
     $caption_options = [
-      'title' => $this->t('Image Title Tag'),
-      'alt' => $this->t('Image Alt Tag'),
-      'node_title' => $this->t('Node Title'),
+      'title' => $this->t('Image title tag'),
+      'alt' => $this->t('Image alt tag'),
+      'node_title' => $this->t('Entity title'),
     ];
     // Add the other node fields as options.
     if (!empty($form['#fields'])) {
@@ -137,9 +137,9 @@ class PhotoswipeFieldFormatter extends FormatterBase {
 
     if ($this->getSetting('photoswipe_caption')) {
       $caption_options = [
-        'alt' => $this->t('Image Alt Tag'),
-        'title' => $this->t('Image Title Tag'),
-        'node_title' => $this->t('Node Title'),
+        'alt' => $this->t('Image alt tag'),
+        'title' => $this->t('Image title tag'),
+        'node_title' => $this->t('Entity title'),
       ];
       if (array_key_exists($this->getSetting('photoswipe_caption'), $caption_options)) {
         $caption_setting = $caption_options[$this->getSetting('photoswipe_caption')];

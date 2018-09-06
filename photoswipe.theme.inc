@@ -76,7 +76,7 @@ function template_preprocess_photoswipe_image_formatter(array &$variables)
   }
 
   // Render as a standard image if an image style is not given.
-  if (empty($image['#style_name'])) {
+  if (empty($image['#style_name']) || $image['#style_name'] === 'hide') {
     $image['#theme'] = 'image';
   }
 
@@ -125,9 +125,11 @@ function template_preprocess_photoswipe_image_formatter(array &$variables)
 
   $variables['image'] = $image;
   $variables['path'] = $path;
-  $variables['attributes'] = [
-    'class' => 'photoswipe',
-    'data-size' => $dimensions['width'] . 'x' . $dimensions['height'],
-    'data-overlay-title' => $caption,
-  ];
+  $variables['attributes']['class'][] = 'photoswipe';
+  $variables['attributes']['data-size'] = $dimensions['width'] . 'x' . $dimensions['height'];
+  $variables['attributes']['data-overlay-title'] = $caption;
+  if($image['#style_name'] === 'hide'){
+    // Do not display if hidden is selected:
+    $variables['attributes']['class'][] = 'hidden';
+  }
 }
