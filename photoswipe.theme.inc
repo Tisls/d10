@@ -18,7 +18,8 @@ use Drupal\image\Entity\ImageStyle;
  *
  * @ingroup themeable
  */
-function template_preprocess_photoswipe_image_formatter(array &$variables) {
+function template_preprocess_photoswipe_image_formatter(array &$variables)
+{
   $item = $variables['item'];
   $settings = $variables['display_settings'];
   $node = $item->getParent()->getParent()->getValue();
@@ -50,9 +51,8 @@ function template_preprocess_photoswipe_image_formatter(array &$variables) {
   if ($image_file->isValid()) {
     $image_width = $image_file->getWidth();
     $image_height = $image_file->getHeight();
-  }
-  else {
-    $image_width = $image_height = NULL;
+  } else {
+    $image_width = $image_height = null;
   }
 
   $dimensions = [];
@@ -71,8 +71,7 @@ function template_preprocess_photoswipe_image_formatter(array &$variables) {
 
     // Set the dimensions.
     $style->transformDimensions($dimensions, $uri);
-  }
-  else {
+  } else {
     $path = file_create_url($uri);
   }
 
@@ -96,20 +95,31 @@ function template_preprocess_photoswipe_image_formatter(array &$variables) {
       case 'node_title':
         if (!empty($node->title)) {
           $caption = $node->title->value;
-        }
-        else {
+        } else {
           $caption = $alt;
         }
         break;
 
       default:
-        $field_view = $node->{$caption_setting}->view();
+        // Assume the user wants to use another node field as the caption
         $field_view['#view_mode'] = ($settings['photoswipe_view_mode']) ? $settings['photoswipe_view_mode'] : 'default';
+        if (!isset($node->{$caption_setting})) {
+          // No such field exists. We'd better warn and use something reliable.
+          $nid = $node->id();
+          $msg = "'Photoswipe Caption' is unset for field view '@fv' on node: @nid.";
+          \Drupal::logger('photoswipe')->warning($msg, array(
+            '@fv' => $field_view['#view_mode'],
+            '@nid' => $nid
+          ));
+          // Fallback to alt text:
+          $caption = $alt;
+          break;
+        }
+        $field_view = $node->{$caption_setting}->view();
         $caption = render($field_view);
         break;
     }
-  }
-  else {
+  } else {
     $caption = $alt;
   }
 
