@@ -22,7 +22,7 @@ function template_preprocess_photoswipe_image_formatter(array &$variables)
 {
   $item = $variables['item'];
   $settings = $variables['display_settings'];
-  $node = $item->getParent()->getParent()->getValue();
+  $entity = $item->getParent()->getParent()->getValue();
   $uri = $item->entity->getFileUri();
   $alt = !empty($item->alt) ? $item->alt : '';
   $title = !empty($item->title) ? $item->title : '';
@@ -93,8 +93,8 @@ function template_preprocess_photoswipe_image_formatter(array &$variables)
         break;
 
       case 'node_title':
-        if (!empty($node->title)) {
-          $caption = $node->title->value;
+        if (!empty($entity->title)) {
+          $caption = $entity->title->value;
         } else {
           $caption = $alt;
         }
@@ -103,19 +103,19 @@ function template_preprocess_photoswipe_image_formatter(array &$variables)
       default:
         // Assume the user wants to use another node field as the caption
         $field_view['#view_mode'] = ($settings['photoswipe_view_mode']) ? $settings['photoswipe_view_mode'] : 'default';
-        if (!isset($node->{$caption_setting})) {
+        if (!isset($entity->{$caption_setting})) {
           // No such field exists. We'd better warn and use something reliable.
-          $nid = $node->id();
+          $id = $entity->id();
           $msg = "'Photoswipe Caption' is unset for field view '@fv' on node: @nid.";
           \Drupal::logger('photoswipe')->warning($msg, array(
             '@fv' => $field_view['#view_mode'],
-            '@nid' => $nid
+            '@nid' => $id
           ));
           // Fallback to alt text:
           $caption = $alt;
           break;
         }
-        $field_view = $node->{$caption_setting}->view();
+        $field_view = $entity->{$caption_setting}->view();
         $caption = render($field_view);
         break;
     }
