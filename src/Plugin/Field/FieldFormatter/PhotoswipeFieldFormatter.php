@@ -2,6 +2,7 @@
 
 namespace Drupal\photoswipe\Plugin\Field\FieldFormatter;
 
+use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Field\FormatterBase;
 use Drupal\Core\Form\FormStateInterface;
@@ -14,6 +15,7 @@ use Drupal\image\Entity\ImageStyle;
  *   id = "photoswipe_field_formatter",
  *   label = @Translation("Photoswipe"),
  *   field_types = {
+ *     "entity_reference",
  *     "image"
  *   }
  * )
@@ -28,6 +30,7 @@ class PhotoswipeFieldFormatter extends FormatterBase {
       'photoswipe_node_style_first' => '',
       'photoswipe_node_style' => '',
       'photoswipe_image_style' => '',
+      'photoswipe_reference_image_field' => '',
       'photoswipe_caption' => '',
       'photoswipe_view_mode' => '',
     ] + parent::defaultSettings();
@@ -71,11 +74,14 @@ class PhotoswipeFieldFormatter extends FormatterBase {
       'alt' => $this->t('Image alt tag'),
       'node_title' => $this->t('Entity title'),
     ];
-    // Add the other node fields as options.
-    if (!empty($form['#fields'])) {
-      foreach ($form['#fields'] as $node_field) {
-        if ($node_field != $this->fieldDefinition->getName()) {
-          $caption_options[$node_field] = $node_field;
+
+    $element = $this->addEntityReferenceSettings($element);
+
+    // Add the other parent entity fields as options.
+    if (isset($form['#fields'])) {
+      foreach ($form['#fields'] as $parent_field) {
+        if ($parent_field != $this->fieldDefinition->getName()) {
+          $caption_options[$parent_field] = $parent_field;
         }
       }
     }
@@ -95,6 +101,49 @@ class PhotoswipeFieldFormatter extends FormatterBase {
     ];
 
     return $element + parent::settingsForm($form, $form_state);
+  }
+
+  /**
+   * Adds extra settings related when dealing with an entity reference.
+   *
+   * @param array $element
+   *   The settings form structure of this formatter.
+   *
+   * @return array
+   *   The modified settings form structure of this formatter.
+   */
+  private function addEntityReferenceSettings(array $element) {
+    if ($this->fieldDefinition->getType() !== 'entity_reference') {
+      return $element;
+    }
+
+    $target_type = $this->fieldDefinition->getSetting('target_type');
+    $target_bundles = $this->fieldDefinition->getSetting('handler_settings')['target_bundles'];
+
+    /* @var $fields FieldDefinitionInterface[] */
+    $fields = [];
+    foreach ($target_bundles as $bundle) {
+      $fields += \Drupal::service('entity_field.manager')
+        ->getFieldDefinitions($target_type, $bundle);
+    }
+    $fields = array_filter($fields, function (FieldDefinitionInterface $field) {
+      return $field->getType() === 'image' && $field->getName() !== 'thumbnail';
+    });
+
+    $field_options = [];
+    foreach ($fields as $name => $field) {
+      $field_options[$name] = $field->getName();
+    }
+
+    $element['photoswipe_reference_image_field'] = [
+      '#title' => $this->t('Image field of the referenced entity'),
+      '#type' => 'select',
+      '#default_value' => $this->getSetting('photoswipe_reference_image_field'),
+      '#options' => $field_options,
+      '#description' => $this->t('Field that contains the image to be used.'),
+    ];
+
+    return $element;
   }
 
   /**
@@ -133,6 +182,10 @@ class PhotoswipeFieldFormatter extends FormatterBase {
     }
     else {
       $summary[] = $this->t('photoswipe image style: Original image');
+    }
+
+    if ($this->getSetting('photoswipe_reference_image_field')) {
+      $summary[] = $this->t('Referenced entity image field: @field', ['@field' => $this->getSetting('photoswipe_reference_image_field')]);
     }
 
     if ($this->getSetting('photoswipe_caption')) {
@@ -188,6 +241,8 @@ class PhotoswipeFieldFormatter extends FormatterBase {
 
     if (!empty($items)) {
       \Drupal::service('photoswipe.assets_manager')->attach($elements);
+      $elements['#prefix'] = '<div class="photoswipe-gallery">';
+      $elements['#suffix'] = '</div>';
     }
 
     foreach ($items as $delta => $item) {

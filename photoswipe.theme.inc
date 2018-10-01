@@ -7,6 +7,7 @@
 
 use Drupal\Core\Language\Language;
 use Drupal\image\Entity\ImageStyle;
+use Drupal\media\MediaInterface;
 
 /**
  * Prepares variables for a Photoswipe image field formatter.
@@ -18,11 +19,13 @@ use Drupal\image\Entity\ImageStyle;
  *
  * @ingroup themeable
  */
-function template_preprocess_photoswipe_image_formatter(array &$variables)
-{
+function template_preprocess_photoswipe_image_formatter(array &$variables) {
   $item = $variables['item'];
   $settings = $variables['display_settings'];
-  $entity = $item->getParent()->getParent()->getValue();
+  if ($item->entity instanceof MediaInterface && $item->entity->hasField($settings['photoswipe_reference_image_field'])) {
+    $item = $item->entity->get($settings['photoswipe_reference_image_field']);
+  }
+  $entity = $item->getParent()->getValue();
   $uri = $item->entity->getFileUri();
   $alt = !empty($item->alt) ? $item->alt : '';
   $title = !empty($item->title) ? $item->title : '';
@@ -51,8 +54,9 @@ function template_preprocess_photoswipe_image_formatter(array &$variables)
   if ($image_file->isValid()) {
     $image_width = $image_file->getWidth();
     $image_height = $image_file->getHeight();
-  } else {
-    $image_width = $image_height = null;
+  }
+  else {
+    $image_width = $image_height = NULL;
   }
 
   $dimensions = [];
@@ -71,7 +75,8 @@ function template_preprocess_photoswipe_image_formatter(array &$variables)
 
     // Set the dimensions.
     $style->transformDimensions($dimensions, $uri);
-  } else {
+  }
+  else {
     $path = file_create_url($uri);
   }
 
@@ -95,22 +100,23 @@ function template_preprocess_photoswipe_image_formatter(array &$variables)
       case 'node_title':
         if (!empty($entity->title)) {
           $caption = $entity->title->value;
-        } else {
+        }
+        else {
           $caption = $alt;
         }
         break;
 
       default:
-        // Assume the user wants to use another node field as the caption
+        // Assume the user wants to use another node field as the caption.
         $field_view['#view_mode'] = ($settings['photoswipe_view_mode']) ? $settings['photoswipe_view_mode'] : 'default';
         if (!isset($entity->{$caption_setting})) {
           // No such field exists. We'd better warn and use something reliable.
           $id = $entity->id();
           $msg = "'Photoswipe Caption' is unset for field view '@fv' on node: @nid.";
-          \Drupal::logger('photoswipe')->warning($msg, array(
+          \Drupal::logger('photoswipe')->warning($msg, [
             '@fv' => $field_view['#view_mode'],
-            '@nid' => $id
-          ));
+            '@nid' => $id,
+          ]);
           // Fallback to alt text:
           $caption = $alt;
           break;
@@ -119,7 +125,8 @@ function template_preprocess_photoswipe_image_formatter(array &$variables)
         $caption = render($field_view);
         break;
     }
-  } else {
+  }
+  else {
     $caption = $alt;
   }
 
@@ -128,7 +135,7 @@ function template_preprocess_photoswipe_image_formatter(array &$variables)
   $variables['attributes']['class'][] = 'photoswipe';
   $variables['attributes']['data-size'] = $dimensions['width'] . 'x' . $dimensions['height'];
   $variables['attributes']['data-overlay-title'] = $caption;
-  if($image['#style_name'] === 'hide'){
+  if ($image['#style_name'] === 'hide') {
     // Do not display if hidden is selected:
     $variables['attributes']['class'][] = 'hidden';
   }
