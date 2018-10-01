@@ -160,6 +160,32 @@ class PhotoswipeFieldFormatter extends FormatterBase {
     $elements = [];
     $settings = $this->getSettings();
 
+    if ($items->isEmpty()) {
+      $default_image = $this->getFieldSetting('default_image');
+      // If we are dealing with a configurable field, look in both
+      // instance-level and field-level settings.
+      if (empty($default_image['uuid']) && $this->fieldDefinition instanceof FieldConfigInterface) {
+        $default_image = $this->fieldDefinition->getFieldStorageDefinition()
+          ->getSetting('default_image');
+      }
+      if (!empty($default_image['uuid']) && $file = \Drupal::entityManager()->loadEntityByUuid('file', $default_image['uuid'])) {
+        // Clone the FieldItemList into a runtime-only object for the formatter,
+        // so that the fallback image can be rendered without affecting the
+        // field values in the entity being rendered.
+        $items = clone $items;
+        $items->setValue([
+          'target_id' => $file->id(),
+          'alt' => $default_image['alt'],
+          'title' => $default_image['title'],
+          'width' => $default_image['width'],
+          'height' => $default_image['height'],
+          'entity' => $file,
+          '_loaded' => TRUE,
+          '_is_default' => TRUE,
+        ]);
+      }
+    }
+
     if (!empty($items)) {
       \Drupal::service('photoswipe.assets_manager')->attach($elements);
     }
