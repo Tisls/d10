@@ -32,6 +32,7 @@ class PhotoswipeFieldFormatter extends FormatterBase {
       'photoswipe_image_style' => '',
       'photoswipe_reference_image_field' => '',
       'photoswipe_caption' => '',
+      'photoswipe_caption_custom' => '',
       'photoswipe_view_mode' => '',
     ] + parent::defaultSettings();
   }
@@ -73,6 +74,7 @@ class PhotoswipeFieldFormatter extends FormatterBase {
       'title' => $this->t('Image title tag'),
       'alt' => $this->t('Image alt tag'),
       'node_title' => $this->t('Entity title'),
+      'custom' => $this->t('Custom (with tokens)'),
     ];
 
     $element = $this->addEntityReferenceSettings($element);
@@ -93,6 +95,43 @@ class PhotoswipeFieldFormatter extends FormatterBase {
       '#options' => $caption_options,
       '#description' => $this->t('Field that should be used for the caption.'),
     ];
+
+    $element['photoswipe_caption_custom'] = [
+      '#title' => $this->t('Custom caption'),
+      '#type' => 'textarea',
+      '#default_value' => $this->getSetting('photoswipe_caption_custom'),
+      '#states' => [
+        'visible' => [
+          ':input[name$="[settings][photoswipe_caption]"]' => ['value' => 'custom'],
+        ],
+      ],
+    ];
+    if (\Drupal::moduleHandler()->moduleExists('token')) {
+      $element['photoswipe_token_caption'] = [
+        '#type' => 'fieldset',
+        '#title' => t('Replacement patterns'),
+        '#theme' => 'token_tree_link',
+        // A KLUDGE! Need to figure out current entity type in both entity display and views contexts.
+        '#token_types' => ['file', 'node'],
+        '#states' => [
+          'visible' => [
+            ':input[name$="[settings][photoswipe_caption]"]' => ['value' => 'custom'],
+          ],
+        ],
+      ];
+    }
+    else {
+      $element['photoswipe_token_caption'] = [
+        '#type' => 'fieldset',
+        '#title' => $this->t('Replacement patterns'),
+        '#description' => '<strong class="error">' . $this->t('For token support the <a href="@token_url">token module</a> must be installed.', ['@token_url' => 'http://drupal.org/project/token']) . '</strong>',
+        '#states' => [
+          'visible' => [
+            ':input[name$="[settings][photoswipe_caption]"]' => ['value' => 'custom'],
+          ],
+        ],
+      ];
+    }
 
     // Add the current view mode so we can control view mode for node fields.
     $element['photoswipe_view_mode'] = [
@@ -193,6 +232,7 @@ class PhotoswipeFieldFormatter extends FormatterBase {
         'alt' => $this->t('Image alt tag'),
         'title' => $this->t('Image title tag'),
         'node_title' => $this->t('Entity title'),
+        'custom' => $this->t('Custom (with tokens)'),
       ];
       if (array_key_exists($this->getSetting('photoswipe_caption'), $caption_options)) {
         $caption_setting = $caption_options[$this->getSetting('photoswipe_caption')];

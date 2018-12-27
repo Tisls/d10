@@ -107,6 +107,13 @@ function template_preprocess_photoswipe_image_formatter(array &$variables) {
         }
         break;
 
+      case 'custom':
+        $entity_type = $entity->getEntityTypeId();
+        $caption = \Drupal::token()->replace($settings['photoswipe_caption_custom'],
+          [$entity_type => $entity, 'file' => $item],
+          ['clear' => TRUE, 'langcode' => \Drupal::languageManager()->getCurrentLanguage()->getId()]);
+        break;
+
       default:
         // Assume the user wants to use another node field as the caption.
         $field_view['#view_mode'] = ($settings['photoswipe_view_mode']) ? $settings['photoswipe_view_mode'] : 'default';
