@@ -120,7 +120,7 @@
 
       // Ensures we have items (.photoswipe element) before initializing 
       // PhotoSwipe so to make PhotoSwipe get along with Blazy, Slick, etc.
-      if (items.length) {
+      if (items.length > 0) {
         // Pass data to PhotoSwipe and initialize it
         var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, options);
         gallery.init();
