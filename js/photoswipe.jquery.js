@@ -118,10 +118,14 @@
         return { x: tpos.left, y: tpos.top, w: tw };
       }
 
-      // Pass data to PhotoSwipe and initialize it
-      var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, options);
-      gallery.init();
-      this.galleries.push(gallery);
+      // Ensures we have items (.photoswipe element) before initializing 
+      // PhotoSwipe so to make PhotoSwipe get along with Blazy, Slick, etc.
+      if (items.length) {
+        // Pass data to PhotoSwipe and initialize it
+        var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, options);
+        gallery.init();
+        this.galleries.push(gallery);
+      }
     },
     /**
      * Parse picture index and gallery index from URL (#&pid=1&gid=2)
