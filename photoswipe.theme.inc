@@ -22,10 +22,11 @@ use Drupal\media\MediaInterface;
 function template_preprocess_photoswipe_image_formatter(array &$variables) {
   $item = $variables['item'];
   $settings = $variables['display_settings'];
-  if ($item->entity instanceof MediaInterface && $item->entity->hasField($settings['photoswipe_reference_image_field'])) {
+  // Add support for Drupal Core Media and media_entity Media references:
+  if (($item->entity instanceof Drupal\media\MediaInterface || $item->entity instanceof Drupal\media_entity\MediaInterface) && $item->entity->hasField($settings['photoswipe_reference_image_field'])) {
     $item = $item->entity->get($settings['photoswipe_reference_image_field']);
   }
-  $entity = $item->getParent()->getValue();
+  $entity = $variables['entity'];
   $uri = $item->entity->getFileUri();
   $alt = !empty($item->alt) ? $item->alt : '';
   $title = !empty($item->title) ? $item->title : '';

@@ -39,6 +39,7 @@ function photoswipe_theme() {
     'photoswipe_image_formatter' => [
       'variables' => [
         'item' => NULL,
+        'entity' => NULL,
         'display_settings' => [],
         'delta' => NULL,
       ],

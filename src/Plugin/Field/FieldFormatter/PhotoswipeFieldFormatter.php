@@ -249,6 +249,7 @@ class PhotoswipeFieldFormatter extends FormatterBase {
       $elements[$delta] = [
         '#theme' => 'photoswipe_image_formatter',
         '#item' => $item,
+        '#entity' => $items->getEntity(),
         '#display_settings' => $settings,
         '#delta' => $delta,
       ];
