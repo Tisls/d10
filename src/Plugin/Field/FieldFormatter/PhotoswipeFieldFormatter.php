@@ -279,7 +279,8 @@ class PhotoswipeFieldFormatter extends FormatterBase {
       }
     }
 
-    if (!empty($items)) {
+    if (!empty($items) && count($items) > 1) {
+      // If there are more than 1 elements, add the gallery wrapper. Otherwise this is done in javascript for more flexibility.
       \Drupal::service('photoswipe.assets_manager')->attach($elements);
       $elements['#prefix'] = '<div class="photoswipe-gallery">';
       $elements['#suffix'] = '</div>';
