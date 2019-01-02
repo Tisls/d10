@@ -8,6 +8,11 @@
 use Drupal\Component\Utility\Unicode;
 
 /**
+ * The minimum PhotoSwipe version we support.
+ */
+const PHOTOSWIPE_MIN_PLUGIN_VERSION = '4.0.0';
+
+/**
  * Implements hook_requirements().
  */
 function photoswipe_requirements($phase) {
