@@ -111,7 +111,8 @@ class PhotoswipeFieldFormatter extends FormatterBase {
         '#type' => 'fieldset',
         '#title' => t('Replacement patterns'),
         '#theme' => 'token_tree_link',
-        // A KLUDGE! Need to figure out current entity type in both entity display and views contexts.
+        // A KLUDGE! Need to figure out current entity type.
+        // in both entity display and views contexts.
         '#token_types' => ['file', 'node'],
         '#states' => [
           'visible' => [
@@ -261,7 +262,7 @@ class PhotoswipeFieldFormatter extends FormatterBase {
         $default_image = $this->fieldDefinition->getFieldStorageDefinition()
           ->getSetting('default_image');
       }
-      if (!empty($default_image['uuid']) && $file = \Drupal::entityManager()->loadEntityByUuid('file', $default_image['uuid'])) {
+      if (!empty($default_image['uuid']) && $file = \Drupal::service('entity.repository')->loadEntityByUuid('file', $default_image['uuid'])) {
         // Clone the FieldItemList into a runtime-only object for the formatter,
         // so that the fallback image can be rendered without affecting the
         // field values in the entity being rendered.
@@ -280,7 +281,8 @@ class PhotoswipeFieldFormatter extends FormatterBase {
     }
 
     if (!empty($items) && count($items) > 1) {
-      // If there are more than 1 elements, add the gallery wrapper. Otherwise this is done in javascript for more flexibility.
+      // If there are more than 1 elements, add the gallery wrapper.
+      // Otherwise this is done in javascript for more flexibility.
       \Drupal::service('photoswipe.assets_manager')->attach($elements);
       $elements['#prefix'] = '<div class="photoswipe-gallery">';
       $elements['#suffix'] = '</div>';
