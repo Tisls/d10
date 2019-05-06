@@ -112,6 +112,10 @@
         var tn = galleryElement.find('a.photoswipe:eq(' + index + ') img');
         if (tn.length == 0) {
           tn = galleryElement.find('a.photoswipe:eq(0) img');
+          if (tn.length == 0) {
+            // Return undefined if still null, see https://www.drupal.org/project/photoswipe/issues/3023442
+            return undefined;
+          }
         }
         var tw = tn.width();
         var tpos = tn.offset();
