@@ -2,11 +2,17 @@
 
 namespace Drupal\photoswipe\Plugin\Field\FieldFormatter;
 
+use Drupal\Core\Entity\EntityRepositoryInterface;
+use Drupal\Core\Extension\ModuleHandlerInterface;
+use Drupal\Core\Field\FieldConfigInterface;
 use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Field\FormatterBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\image\Entity\ImageStyle;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Drupal\Core\Entity\EntityFieldManagerInterface;
+use Drupal\photoswipe\PhotoswipeAssetsManagerInterface;
 
 /**
  * Plugin implementation of the 'photoswipe_field_formatter' formatter.
@@ -23,6 +29,34 @@ use Drupal\image\Entity\ImageStyle;
 class PhotoswipeFieldFormatter extends FormatterBase {
 
   /**
+   * The module handler.
+   *
+   * @var \Drupal\Core\Extension\ModuleHandlerInterface
+   */
+  protected $moduleHandler;
+
+  /**
+   * The entity field manager.
+   *
+   * @var \Drupal\Core\Entity\EntityFieldManagerInterface
+   */
+  protected $entityFieldManager;
+
+  /**
+   * The entity repository.
+   *
+   * @var \Drupal\Core\Entity\EntityRepositoryInterface
+   */
+  protected $entityRepository;
+
+  /**
+   * The assets manager.
+   *
+   * @var \Drupal\photoswipe\PhotoswipeAssetsManagerInterface
+   */
+  protected $photoswipeAssetManager;
+
+  /**
    * {@inheritdoc}
    */
   public static function defaultSettings() {
@@ -35,6 +69,77 @@ class PhotoswipeFieldFormatter extends FormatterBase {
       'photoswipe_caption_custom' => '',
       'photoswipe_view_mode' => '',
     ] + parent::defaultSettings();
+  }
+
+  /**
+   * Constructs a FormatterBase object.
+   *
+   * @param string $plugin_id
+   *   The plugin_id for the formatter.
+   * @param mixed $plugin_definition
+   *   The plugin implementation definition.
+   * @param \Drupal\Core\Field\FieldDefinitionInterface $field_definition
+   *   The definition of the field to which the formatter is associated.
+   * @param array $settings
+   *   The formatter settings.
+   * @param string $label
+   *   The formatter label display setting.
+   * @param string $view_mode
+   *   The view mode.
+   * @param array $third_party_settings
+   *   Any third party settings.
+   * @param \Drupal\Core\Extension\ModuleHandlerInterface $module_handler
+   *   The module handler.
+   * @param \Drupal\Core\Entity\EntityFieldManagerInterface $entity_field_manager
+   *   The entity field manager.
+   * @param \Drupal\Core\Entity\EntityRepositoryInterface $entity_repository
+   *   The entity repository.
+   * @param \Drupal\photoswipe\PhotoswipeAssetsManagerInterface $assets_manager
+   *   The assets manager.
+   */
+  public function __construct(
+    $plugin_id,
+    $plugin_definition,
+    FieldDefinitionInterface $field_definition,
+    array $settings,
+    $label,
+    $view_mode,
+    array $third_party_settings,
+    ModuleHandlerInterface $module_handler,
+    EntityFieldManagerInterface $entity_field_manager,
+    EntityRepositoryInterface $entity_repository,
+    PhotoswipeAssetsManagerInterface $assets_manager
+  ) {
+    parent::__construct($plugin_id, $plugin_definition, $field_definition, $settings, $label, $view_mode, $third_party_settings);
+
+    $this->fieldDefinition = $field_definition;
+    $this->settings = $settings;
+    $this->label = $label;
+    $this->viewMode = $view_mode;
+    $this->thirdPartySettings = $third_party_settings;
+    $this->moduleHandler = $module_handler;
+    $this->entityFieldManager = $entity_field_manager;
+    $this->entityRepository = $entity_repository;
+    $this->photoswipeAssetManager = $assets_manager;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
+    return new static(
+      $plugin_id,
+      $plugin_definition,
+      $configuration['field_definition'],
+      $configuration['settings'],
+      $configuration['label'],
+      $configuration['view_mode'],
+      $configuration['third_party_settings'],
+      $container->get('module_handler'),
+      $container->get('entity_field.manager'),
+      $container->get('entity.repository'),
+      $container->get('photoswipe.assets_manager')
+    );
   }
 
   /**
@@ -106,10 +211,10 @@ class PhotoswipeFieldFormatter extends FormatterBase {
         ],
       ],
     ];
-    if (\Drupal::moduleHandler()->moduleExists('token')) {
+    if ($this->moduleHandler->moduleExists('token')) {
       $element['photoswipe_token_caption'] = [
         '#type' => 'fieldset',
-        '#title' => t('Replacement patterns'),
+        '#title' => $this->t('Replacement patterns'),
         '#theme' => 'token_tree_link',
         // A KLUDGE! Need to figure out current entity type.
         // in both entity display and views contexts.
@@ -163,8 +268,7 @@ class PhotoswipeFieldFormatter extends FormatterBase {
     /* @var $fields FieldDefinitionInterface[] */
     $fields = [];
     foreach ($target_bundles as $bundle) {
-      $fields += \Drupal::service('entity_field.manager')
-        ->getFieldDefinitions($target_type, $bundle);
+      $fields += $this->entityFieldManager->getFieldDefinitions($target_type, $bundle);
     }
     $fields = array_filter($fields, function (FieldDefinitionInterface $field) {
       return $field->getType() === 'image' && $field->getName() !== 'thumbnail';
@@ -262,7 +366,7 @@ class PhotoswipeFieldFormatter extends FormatterBase {
         $default_image = $this->fieldDefinition->getFieldStorageDefinition()
           ->getSetting('default_image');
       }
-      if (!empty($default_image['uuid']) && $file = \Drupal::service('entity.repository')->loadEntityByUuid('file', $default_image['uuid'])) {
+      if (!empty($default_image['uuid']) && $file = $this->entityRepository->loadEntityByUuid('file', $default_image['uuid'])) {
         // Clone the FieldItemList into a runtime-only object for the formatter,
         // so that the fallback image can be rendered without affecting the
         // field values in the entity being rendered.
@@ -280,7 +384,7 @@ class PhotoswipeFieldFormatter extends FormatterBase {
       }
     }
 
-    \Drupal::service('photoswipe.assets_manager')->attach($elements);
+    $this->photoswipeAssetManager->attach($elements);
     if (!empty($items) && count($items) > 1) {
       // If there are more than 1 elements, add the gallery wrapper.
       // Otherwise this is done in javascript for more flexibility.

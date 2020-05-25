@@ -36,7 +36,8 @@ combinations of image styles are proposed.
 2. Multiple images in Views
 To use photoswipe in views you must add a custom CSS class called
 'photoswipe-gallery'.
-Add the CSS class to Advanced >> Other >> CSS class in the view settings (bottom right).
+Add the CSS class to Advanced >> Other >> CSS class
+in the view settings (bottom right).
 
 3. Single image in node
 To load a single image in node you must add data-size="widthxheight"

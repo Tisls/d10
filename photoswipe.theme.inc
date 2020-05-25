@@ -8,6 +8,7 @@
 use Drupal\Core\Language\Language;
 use Drupal\image\Entity\ImageStyle;
 use Drupal\media\MediaInterface;
+use Drupal\media_entity\MediaInterface as MediaEntityInterface;
 
 /**
  * Prepares variables for a Photoswipe image field formatter.
@@ -23,7 +24,7 @@ function template_preprocess_photoswipe_image_formatter(array &$variables) {
   $item = $variables['item'];
   $settings = $variables['display_settings'];
   // Add support for Drupal Core Media and media_entity Media references:
-  if (($item->entity instanceof Drupal\media\MediaInterface || $item->entity instanceof Drupal\media_entity\MediaInterface) && $item->entity->hasField($settings['photoswipe_reference_image_field'])) {
+  if (($item->entity instanceof MediaInterface || $item->entity instanceof MediaEntityInterface) && $item->entity->hasField($settings['photoswipe_reference_image_field'])) {
     $item = $item->entity->get($settings['photoswipe_reference_image_field']);
   }
   $entity = $variables['entity'];

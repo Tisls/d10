@@ -5,6 +5,8 @@
  * Drush integration for PhotoSwipe.
  */
 
+use Symfony\Component\Filesystem\Filesystem;
+
 /**
  * The PhotoSwipe plugin URI.
  */
@@ -67,7 +69,7 @@ function drush_photoswipe_plugin() {
   // Create the path if it does not exist.
   if (!is_dir($path)) {
     drush_op('mkdir', $path);
-    drush_log(dt('Directory @path was created', ['@path' => $path]), 'notice');
+    \Drupal::logger(dt('Directory @path was created', ['@path' => $path]))->notice('notice');
   }
 
   // Set the directory to the download location.
@@ -81,9 +83,9 @@ function drush_photoswipe_plugin() {
 
     // Remove any existing PhotoSwipe plugin directory.
     if (is_dir($dirname) || is_dir('photoswipe')) {
-      drush_delete_dir($dirname, TRUE);
-      drush_delete_dir('photoswipe', TRUE);
-      drush_log(dt('A existing PhotoSwipe plugin was deleted from @path', ['@path' => $path]), 'notice');
+      Filesystem::remove($dirname, TRUE);
+      Filesystem::remove('photoswipe', TRUE);
+      \Drupal::logger(dt('A existing PhotoSwipe plugin was deleted from @path', ['@path' => $path]))->notice('notice');
     }
 
     // Decompress the zip archive.
@@ -97,10 +99,10 @@ function drush_photoswipe_plugin() {
   }
 
   if (is_dir($dirname)) {
-    drush_log(dt('PhotoSwipe plugin has been installed in @path', ['@path' => $path]), 'success');
+    \Drupal::logger(dt('PhotoSwipe plugin has been installed in @path', ['@path' => $path]))->success('success');
   }
   else {
-    drush_log(dt('Drush was unable to install the PhotoSwipe plugin to @path', ['@path' => $path]), 'error');
+    \Drupal::logger(dt('Drush was unable to install the PhotoSwipe plugin to @path', ['@path' => $path]))->error('error');
   }
 
   // Set working directory back to the previous working directory.

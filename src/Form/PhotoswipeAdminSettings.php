@@ -50,7 +50,7 @@ class PhotoswipeAdminSettings extends ConfigFormBase {
     $form['photoswipe_always_load_non_admin'] = [
       '#type' => 'checkbox',
       '#title' => $this->t('Load PhotoSwipe on all non-admin pages'),
-      '#default_value' => \Drupal::config('photoswipe.settings')->get('photoswipe_always_load_non_admin'),
+      '#default_value' => $this->configFactory->get('photoswipe.settings')->get('photoswipe_always_load_non_admin'),
       '#description' => $this->t('Useful if you want to use photoswipe elsewhere by just adding the <code>.photoswipe</code> CSS class.'),
     ];
 
