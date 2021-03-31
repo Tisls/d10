@@ -53,7 +53,7 @@ function template_preprocess_photoswipe_image_formatter(array &$variables) {
 
   // The image.factory service will check if our image is valid.
   $image_file = \Drupal::service('image.factory')->get($uri);
-  if ($image_file->isValid()) {
+  if ($is_valid_image = $image_file->isValid()) {
     $image_width = $image_file->getWidth();
     $image_height = $image_file->getHeight();
   }
@@ -68,7 +68,7 @@ function template_preprocess_photoswipe_image_formatter(array &$variables) {
   }
 
   // Create the path to the image that will show in Photoswipe.
-  if ($style_name = $settings['photoswipe_image_style']) {
+  if (($style_name = $settings['photoswipe_image_style']) && $is_valid_image) {
     // Load the image style.
     $style = ImageStyle::load($style_name);
 
@@ -142,7 +142,10 @@ function template_preprocess_photoswipe_image_formatter(array &$variables) {
   $variables['image'] = $image;
   $variables['path'] = $path;
   $variables['attributes']['class'][] = 'photoswipe';
-  $variables['attributes']['data-size'] = $dimensions['width'] . 'x' . $dimensions['height'];
+  // In case if image was deleted take dimensions from item itself.
+  $variables['attributes']['data-size'] = $is_valid_image
+    ? $dimensions['width'] . 'x' . $dimensions['height']
+    : $item->width . 'x' . $item->height;
   $variables['attributes']['data-overlay-title'] = $caption;
   if ($image['#style_name'] === 'hide') {
     // Do not display if hidden is selected:
