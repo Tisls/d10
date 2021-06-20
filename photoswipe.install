@@ -29,7 +29,7 @@ function photoswipe_requirements($phase) {
           'severity' => REQUIREMENT_ERROR,
           'description' => t('@error You need to download the <a href=":url">Photoswipe plugin</a>, extract the archive and place the photoswipe directory in the %path directory on your server. Keep package.json file inside directory to be able to check version of the library using Drupal tools.', [
             '@error' => $error_message,
-            ':url' => $library['download url'],
+            ':url' => $library_definition['remote'],
             '%path' => 'libraries',
           ]),
         ];
@@ -53,8 +53,8 @@ function photoswipe_requirements($phase) {
           'value' => t('At least @a', ['@a' => $assets_manager->photoswipeMinPluginVersion]),
           'severity' => REQUIREMENT_ERROR,
           'description' => t('You need to download a later version of the <a href=":url">Photoswipe plugin</a> and replace the old version located in the %path directory on your server. Keep package.json file inside directory to be able to check version of the library using Drupal tools.', [
-            ':url' => $library['download url'],
-            '%path' => $library['library path'],
+            ':url' => $library_definition['remote'],
+            '%path' => '/libraries/photoswipe',
           ]),
         ];
       }
