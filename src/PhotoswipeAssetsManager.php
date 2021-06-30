@@ -5,6 +5,7 @@ namespace Drupal\photoswipe;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Render\RendererInterface;
+use Drupal\Core\Theme\ThemeManager;
 
 /**
  * Photoswipe asset manager.
@@ -47,6 +48,13 @@ class PhotoswipeAssetsManager implements PhotoswipeAssetsManagerInterface {
   protected $moduleHandler;
 
   /**
+   * The theme manager.
+   *
+   * @var \Drupal\Core\Theme\ThemeManager
+   */
+  protected $themeManager;
+
+  /**
    * Creates a \Drupal\photoswipe\PhotoswipeAssetsManager.
    *
    * @param \Drupal\Core\Config\ConfigFactoryInterface $config
@@ -55,11 +63,14 @@ class PhotoswipeAssetsManager implements PhotoswipeAssetsManagerInterface {
    *   The renderer service.
    * @param \Drupal\Core\Extension\ModuleHandlerInterface $module_handler
    *   The module handler.
+   * @param \Drupal\Core\Theme\ThemeManager $themeManager
+   *   The theme manager.
    */
-  public function __construct(ConfigFactoryInterface $config, RendererInterface $renderer, ModuleHandlerInterface $module_handler) {
+  public function __construct(ConfigFactoryInterface $config, RendererInterface $renderer, ModuleHandlerInterface $module_handler, ThemeManager $themeManager) {
     $this->config = $config->get('photoswipe.settings');
     $this->renderer = $renderer;
     $this->moduleHandler = $module_handler;
+    $this->themeManager = $themeManager;
   }
 
   /**
@@ -77,6 +88,7 @@ class PhotoswipeAssetsManager implements PhotoswipeAssetsManagerInterface {
     // Allow other modules to alter / extend the options to pass to photoswipe
     // JavaScript.
     $this->moduleHandler->alter('photoswipe_js_options', $options);
+    $this->themeManager->alter('photoswipe_js_options', $options);
     $element['#attached']['drupalSettings']['photoswipe']['options'] = $options;
 
     // Add photoswipe container with class="pswp".

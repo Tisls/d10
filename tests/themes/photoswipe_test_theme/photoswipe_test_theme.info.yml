@@ -1,0 +1,9 @@
+name: Photoswipe test theme
+type: theme
+description: 'Theme for testing the photoswipe module'
+version: VERSION
+base theme: classy
+core_version_requirement: ^8.8 || ^9
+
+regions:
+  content: Content
