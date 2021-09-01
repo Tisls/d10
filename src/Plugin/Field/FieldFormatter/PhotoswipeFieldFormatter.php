@@ -57,6 +57,13 @@ class PhotoswipeFieldFormatter extends FormatterBase {
   protected $photoswipeAssetManager;
 
   /**
+   * True if include 'hidden' style for images.
+   *
+   * @var bool
+   */
+  protected $includeHidden = TRUE;
+
+  /**
    * {@inheritdoc}
    */
   public static function defaultSettings() {
@@ -146,9 +153,9 @@ class PhotoswipeFieldFormatter extends FormatterBase {
    * {@inheritdoc}
    */
   public function settingsForm(array $form, FormStateInterface $form_state) {
-    $image_styles = image_style_options(FALSE);
-    $image_styles_hide = $image_styles;
-    $image_styles_hide['hide'] = $this->t('Hide (do not display image)');
+    $image_styles_hide = $this->includeHidden
+      ? $this->getImageStyles() + ['hide' => $this->t('Hide (do not display image)')]
+      : $this->getImageStyles();
     $element['photoswipe_node_style_first'] = [
       '#title' => $this->t('Node image style for first image'),
       '#type' => 'select',
@@ -170,7 +177,7 @@ class PhotoswipeFieldFormatter extends FormatterBase {
       '#type' => 'select',
       '#default_value' => $this->getSetting('photoswipe_image_style'),
       '#empty_option' => $this->t('None (original image)'),
-      '#options' => $image_styles,
+      '#options' => $this->getPhotoSwipeStyles(),
       '#description' => $this->t('Image style to use in the Photoswipe.'),
     ];
 
@@ -249,6 +256,26 @@ class PhotoswipeFieldFormatter extends FormatterBase {
   }
 
   /**
+   * Get default image styles.
+   *
+   * @return array
+   *   Image styles.
+   */
+  protected function getImageStyles() {
+    return image_style_options(FALSE);
+  }
+
+  /**
+   * Get image styles for the photoswipe.
+   *
+   * @return array
+   *   Image styles.
+   */
+  protected function getPhotoSwipeStyles() {
+    return image_style_options(FALSE);
+  }
+
+  /**
    * Adds extra settings related when dealing with an entity reference.
    *
    * @param array $element
@@ -257,7 +284,7 @@ class PhotoswipeFieldFormatter extends FormatterBase {
    * @return array
    *   The modified settings form structure of this formatter.
    */
-  private function addEntityReferenceSettings(array $element) {
+  public function addEntityReferenceSettings(array $element) {
     if ($this->fieldDefinition->getType() !== 'entity_reference') {
       return $element;
     }
@@ -265,7 +292,7 @@ class PhotoswipeFieldFormatter extends FormatterBase {
     $target_type = $this->fieldDefinition->getSetting('target_type');
     $target_bundles = $this->fieldDefinition->getSetting('handler_settings')['target_bundles'];
 
-    /* @var $fields FieldDefinitionInterface[] */
+    /** @var \Drupal\Core\Field\FieldDefinitionInterface[] $fields */
     $fields = [];
     foreach ($target_bundles as $bundle) {
       $fields += $this->entityFieldManager->getFieldDefinitions($target_type, $bundle);
@@ -296,7 +323,8 @@ class PhotoswipeFieldFormatter extends FormatterBase {
   public function settingsSummary() {
     $summary = [];
 
-    $image_styles = image_style_options(FALSE);
+    $image_styles = $this->getImageStyles();
+    $photoswipe_styles = $this->getPhotoSwipeStyles();
     // Unset possible 'No defined styles' option.
     unset($image_styles['']);
     // Styles could be lost because of enabled/disabled modules that defines
@@ -321,11 +349,11 @@ class PhotoswipeFieldFormatter extends FormatterBase {
       $summary[] = $this->t('Node image style of first image: Original image');
     }
 
-    if (isset($image_styles[$this->getSetting('photoswipe_image_style')])) {
-      $summary[] = $this->t('Photoswipe image style: @style', ['@style' => $image_styles[$this->getSetting('photoswipe_image_style')]]);
+    if (isset($photoswipe_styles[$this->getSetting('photoswipe_image_style')])) {
+      $summary[] = $this->t('Photoswipe image style: @style', ['@style' => $photoswipe_styles[$this->getSetting('photoswipe_image_style')]]);
     }
     else {
-      $summary[] = $this->t('photoswipe image style: Original image');
+      $summary[] = $this->t('Photoswipe image style: Original image');
     }
 
     if ($this->getSetting('photoswipe_reference_image_field')) {

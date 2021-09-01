@@ -40,6 +40,16 @@ function photoswipe_theme() {
       ],
       'file' => 'photoswipe.theme.inc',
     ],
+    'photoswipe_responsive_image_formatter' => [
+      'variables' => [
+        'item' => NULL,
+        'entity' => NULL,
+        'display_settings' => [],
+        'delta' => NULL,
+      ],
+      'template' => 'photoswipe-image-formatter',
+      'file' => 'photoswipe.theme.inc',
+    ],
     'photoswipe_container' => [
       'variables' => [],
     ],
