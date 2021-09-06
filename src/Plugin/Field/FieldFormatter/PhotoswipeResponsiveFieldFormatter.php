@@ -7,6 +7,7 @@ use Drupal\Core\Render\Element;
 use Drupal\image\Entity\ImageStyle;
 use Drupal\responsive_image\Entity\ResponsiveImageStyle;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Drupal\Core\Field\FieldDefinitionInterface;
 
 /**
  * Provides formatter that supports responsive image.
@@ -101,6 +102,14 @@ class PhotoswipeResponsiveFieldFormatter extends PhotoswipeFieldFormatter {
       $dependencies[$style->getConfigDependencyKey()][] = $style->getConfigDependencyName();
     }
     return $dependencies;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function isApplicable(FieldDefinitionInterface $field_definition) {
+    return \Drupal::service('module_handler')->moduleExists('responsive_image') ?
+      parent::isApplicable($field_definition) : FALSE;
   }
 
 }
