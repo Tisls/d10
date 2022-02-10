@@ -468,7 +468,7 @@ class PhotoswipeFieldFormatter extends FormatterBase {
     $style_ids['photoswipe_image_style'] = $this->getSetting('photoswipe_image_style');
     /** @var \Drupal\image\ImageStyleInterface $style */
     foreach ($style_ids as $name => $style_id) {
-      if ($style_id && $style = ImageStyle::load($style_id)) {
+      if (!empty($style_id) && $style = ImageStyle::load($style_id)) {
         if (!empty($dependencies[$style->getConfigDependencyKey()][$style->getConfigDependencyName()])) {
           $replacement_id = $this->imageStyleStorage->getReplacementId($style_id);
           // If a valid replacement has been provided in the storage, replace
