@@ -24,13 +24,6 @@ class PhotoswipePreprocessProcessor implements ContainerInjectionInterface {
   protected $entityTypeManager;
 
   /**
-   * Image factory.
-   *
-   * @var \Drupal\Core\Image\ImageFactory
-   */
-  protected $imageFactory;
-
-  /**
    * Token.
    *
    * @var \Drupal\Core\Utility\Token
@@ -70,8 +63,6 @@ class PhotoswipePreprocessProcessor implements ContainerInjectionInterface {
    *
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager
    *   Entity manager.
-   * @param \Drupal\Core\Image\ImageFactory $imageFactory
-   *   Image factory.
    * @param \Drupal\Core\Utility\Token $token
    *   Token.
    * @param \Drupal\Core\Language\LanguageManagerInterface $languageManager
@@ -83,14 +74,12 @@ class PhotoswipePreprocessProcessor implements ContainerInjectionInterface {
    */
   public function __construct(
     EntityTypeManagerInterface $entityTypeManager,
-    ImageFactory $imageFactory,
     Token $token,
     LanguageManagerInterface $languageManager,
     LoggerChannelFactoryInterface $channelFactory,
     RendererInterface $renderer
   ) {
     $this->entityTypeManager = $entityTypeManager;
-    $this->imageFactory = $imageFactory;
     $this->token = $token;
     $this->languageManager = $languageManager;
     $this->renderer = $renderer;
@@ -103,7 +92,6 @@ class PhotoswipePreprocessProcessor implements ContainerInjectionInterface {
   public static function create(ContainerInterface $container) {
     return new static(
       $container->get('entity_type.manager'),
-      $container->get('image.factory'),
       $container->get('token'),
       $container->get('language_manager'),
       $container->get('logger.factory'),
@@ -120,7 +108,6 @@ class PhotoswipePreprocessProcessor implements ContainerInjectionInterface {
   public function preprocess(array &$variables) {
     $this->imageDTO = ImageDTO::createFromVariables($variables);
     $image = $this->getRandarableImage($variables);
-    $this->setDimensions($image);
 
     $variables['image'] = $image;
     $variables['path'] = $this->getPath();
@@ -214,6 +201,8 @@ class PhotoswipePreprocessProcessor implements ContainerInjectionInterface {
       '#uri' => $this->imageDTO->getUri(),
       '#alt' => $this->imageDTO->getAlt(),
       '#title' => $this->imageDTO->getTitle(),
+      '#width' => $this->imageDTO->getWidth(),
+      '#height' => $this->imageDTO->getHeight(),
       '#attributes' => $this->imageDTO->getItem()->_attributes,
       '#style_name' => $this->imageDTO->getSettings()['photoswipe_node_style'],
     ];
@@ -249,25 +238,6 @@ class PhotoswipePreprocessProcessor implements ContainerInjectionInterface {
     }
     else {
       return file_create_url($this->imageDTO->getUri());
-    }
-  }
-
-  /**
-   * Set image dimensions.
-   *
-   * @param array $image
-   *   Randarable array of image.
-   */
-  protected function setDimensions(array &$image) {
-    // The image.factory service will check if our image is valid.
-    $image_file = $this->imageFactory->get($this->imageDTO->getUri());
-    if ($image_file->isValid()) {
-      $image['#width'] = $image_file->getWidth();
-      $image['#height'] = $image_file->getHeight();
-      $this->imageDTO->setDimensions([
-        ImageDTO::HEIGHT => $image_file->getHeight(),
-        ImageDTO::WIDTH => $image_file->getWidth(),
-      ]);
     }
   }
 
