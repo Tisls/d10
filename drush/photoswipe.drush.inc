@@ -24,7 +24,7 @@ function photoswipe_drush_command() {
     'callback' => 'drush_photoswipe_plugin',
     'description' => dt('Download and install the PhotoSwipe plugin.'),
   // No bootstrap.
-    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
+    'bootstrap' => DRUSH_BOOTSTRAP_NONE,
     'arguments' => [
       'path' => dt('Optional. A path where to install the PhotoSwipe plugin. If omitted Drush will use the default location.'),
     ],

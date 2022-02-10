@@ -176,7 +176,7 @@ class PhotoswipePreprocessProcessor implements ContainerInjectionInterface {
             break;
           }
           $field_view = $entity->{$caption_setting}->view();
-          $caption = render($field_view);
+          $caption = \Drupal::service('renderer')->render($field_view);
           break;
       }
     }
@@ -237,7 +237,7 @@ class PhotoswipePreprocessProcessor implements ContainerInjectionInterface {
       return $style->buildUrl($this->imageDTO->getUri());
     }
     else {
-      return file_create_url($this->imageDTO->getUri());
+      return \Drupal::service('file_url_generator')->generateAbsoluteString($this->imageDTO->getUri());
     }
   }
 
