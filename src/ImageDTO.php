@@ -121,8 +121,8 @@ class ImageDTO {
     $this->uri = $this->item->entity->getFileUri();
     $this->entity = $variables['entity'];
     $this->setDimensions([
-      ImageDTO::HEIGHT => $item->height,
-      ImageDTO::WIDTH => $item->width,
+      ImageDTO::HEIGHT => $this->item->height,
+      ImageDTO::WIDTH => $this->item->width,
     ]);
   }
 
