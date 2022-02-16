@@ -2,7 +2,6 @@
 
 namespace Drupal\photoswipe;
 
-use Drupal\Core\Language\Language;
 use Drupal\media\MediaInterface;
 use Drupal\media_entity\MediaInterface as MediaEntityInterface;
 
@@ -104,19 +103,8 @@ class ImageDTO {
       ? $item->entity->get($this->settings['photoswipe_reference_image_field'])
       : $item;
 
-    if (!empty($this->item->alt)) {
-      $this->alt = $this->item->alt;
-    }
-    elseif (!empty($this->item->field_file_image_alt_text[Language::LANGCODE_NOT_SPECIFIED])) {
-      $this->alt = $this->item->field_file_image_alt_text[Language::LANGCODE_NOT_SPECIFIED][0]['value'];
-    }
-
-    if (!empty($this->item->title)) {
-      $this->title = $this->item->title;
-    }
-    elseif (!empty($this->item->field_file_image_title_text[Language::LANGCODE_NOT_SPECIFIED])) {
-      $this->item = $this->item->field_file_image_title_text[Language::LANGCODE_NOT_SPECIFIED][0]['value'];
-    }
+    $this->alt = $this->item->alt ?: NULL;
+    $this->title = $this->item->title ?: NULL;
 
     $this->uri = $this->item->entity->getFileUri();
     $this->entity = $variables['entity'];
