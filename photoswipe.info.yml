@@ -1,6 +1,6 @@
 name: PhotoSwipe
 description: 'Javascript-based photo gallery display for your Drupal website (very sleek with mobile browsers).'
-core_version_requirement: ^8 || ^9
+core_version_requirement: ^9.3
 type: module
 package: Media
 configure: photoswipe.admin_settings
