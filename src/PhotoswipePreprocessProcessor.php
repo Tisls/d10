@@ -4,7 +4,7 @@ namespace Drupal\photoswipe;
 
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
-use Drupal\Core\File\FileUrlGenerator;
+use Drupal\Core\File\FileUrlGeneratorInterface;
 use Drupal\Core\Language\LanguageManagerInterface;
 use Drupal\Core\Logger\LoggerChannelFactoryInterface;
 use Drupal\Core\Render\RendererInterface;
@@ -61,7 +61,7 @@ class PhotoswipePreprocessProcessor implements ContainerInjectionInterface {
   /**
    * File url generator object.
    *
-   * @var \Drupal\Core\File\FileUrlGenerator
+   * @var \Drupal\Core\File\FileUrlGeneratorInterface
    */
   protected $fileUrlGenerator;
 
@@ -78,7 +78,7 @@ class PhotoswipePreprocessProcessor implements ContainerInjectionInterface {
    *   Chanel factory.
    * @param \Drupal\Core\Render\RendererInterface $renderer
    *   Renderer.
-   * @param \Drupal\Core\File\FileUrlGenerator $fileUrlGenerator
+   * @param \Drupal\Core\File\FileUrlGeneratorInterface $fileUrlGenerator
    *   File url generator object.
    */
   public function __construct(
@@ -87,7 +87,7 @@ class PhotoswipePreprocessProcessor implements ContainerInjectionInterface {
     LanguageManagerInterface $languageManager,
     LoggerChannelFactoryInterface $channelFactory,
     RendererInterface $renderer,
-    FileUrlGenerator $fileUrlGenerator
+    FileUrlGeneratorInterface $fileUrlGenerator
   ) {
     $this->entityTypeManager = $entityTypeManager;
     $this->token = $token;
