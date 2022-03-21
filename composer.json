@@ -37,6 +37,6 @@
   ],
   "require": {},
   "suggest": {
-    "bower-asset/photoswipe": "Required to user drupal/photoswipe."
+    "bower-asset/photoswipe": "Required to use drupal/photoswipe. Expected version: ^4"
   }
 }
