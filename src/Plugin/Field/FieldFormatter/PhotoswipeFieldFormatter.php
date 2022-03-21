@@ -185,7 +185,7 @@ class PhotoswipeFieldFormatter extends FormatterBase {
     $caption_options = [
       'title' => $this->t('Image title tag'),
       'alt' => $this->t('Image alt tag'),
-      'node_title' => $this->t('Entity title'),
+      'entity_label' => $this->t('Entity label'),
       'custom' => $this->t('Custom (with tokens)'),
     ];
 
@@ -219,13 +219,20 @@ class PhotoswipeFieldFormatter extends FormatterBase {
       ],
     ];
     if ($this->moduleHandler->moduleExists('token')) {
+      $target_type = $this->fieldDefinition->getSetting('target_type');
+      $entity_type = $this->fieldDefinition->get('entity_type');
       $element['photoswipe_token_caption'] = [
         '#type' => 'fieldset',
         '#title' => $this->t('Replacement patterns'),
         '#theme' => 'token_tree_link',
-        // A KLUDGE! Need to figure out current entity type.
-        // in both entity display and views contexts.
-        '#token_types' => ['file', 'node'],
+        '#token_types' => [
+          // Default it will work for file type.
+          'file',
+          // The "entity_type" key is set in \Drupal\Core\Field\FieldConfigBase.
+          $entity_type ?: 'node',
+          // For prevent duplicate file type.
+          ($target_type !== 'file' ? $target_type : 'media'),
+        ],
         '#states' => [
           'visible' => [
             ':input[name$="[settings][photoswipe_caption]"]' => ['value' => 'custom'],
@@ -364,7 +371,7 @@ class PhotoswipeFieldFormatter extends FormatterBase {
       $caption_options = [
         'alt' => $this->t('Image alt tag'),
         'title' => $this->t('Image title tag'),
-        'node_title' => $this->t('Entity title'),
+        'entity_label' => $this->t('Entity label'),
         'custom' => $this->t('Custom (with tokens)'),
       ];
       if (array_key_exists($this->getSetting('photoswipe_caption'), $caption_options)) {

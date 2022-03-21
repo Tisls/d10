@@ -137,14 +137,10 @@ class PhotoswipePreprocessProcessor implements ContainerInjectionInterface {
           $caption = $this->imageDTO->getTitle();
           break;
 
+        // Backward compatibility for stored settings.
         case 'node_title':
-          if (!empty($this->entity->title)) {
-            $caption = $this->imageDTO->getEntity()->title->value;
-          }
-          else {
-            $caption = $this->imageDTO->getAlt();
-          }
-          break;
+        case 'entity_label':
+          $caption = $this->imageDTO->getEntity()->label() ?: $this->imageDTO->getAlt();
 
         case 'custom':
           $entity_type = $this->imageDTO->getEntity()->getEntityTypeId();
