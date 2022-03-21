@@ -171,6 +171,7 @@ class PhotoswipePreprocessProcessor implements ContainerInjectionInterface {
         default:
           // Assume the user wants to use another node field as the caption.
           $field_view['#view_mode'] = ($settings['photoswipe_view_mode']) ? $settings['photoswipe_view_mode'] : 'default';
+          $entity = $this->imageDTO->getEntity();
           if (!isset($entity->{$caption_setting})) {
             // No such field exists we'd better warn and use something reliable.
             $id = $this->imageDTO->getEntity()->id();
