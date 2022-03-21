@@ -13,7 +13,7 @@ class PhotoswipeResponsivePreprocessProcessor extends PhotoswipePreprocessProces
   /**
    * {@inheritDoc}
    */
-  protected function getRandarableImage($variables) {
+  protected function getRenderableImage($variables) {
     $item = $this->imageDTO->getItem();
     $settings = $this->imageDTO->getSettings();
     $image_style_store = $this->entityTypeManager->getStorage('image_style');

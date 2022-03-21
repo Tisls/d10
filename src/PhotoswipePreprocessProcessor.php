@@ -119,7 +119,7 @@ class PhotoswipePreprocessProcessor implements ContainerInjectionInterface {
    */
   public function preprocess(array &$variables) {
     $this->imageDTO = ImageDTO::createFromVariables($variables);
-    $image = $this->getRandarableImage($variables);
+    $image = $this->getRenderableImage($variables);
 
     $variables['image'] = $image;
     $variables['path'] = $this->getPath();
@@ -195,15 +195,15 @@ class PhotoswipePreprocessProcessor implements ContainerInjectionInterface {
   }
 
   /**
-   * Build randarable array for given image.
+   * Builds a renderable array for the given image.
    *
    * @param array $variables
    *   An associative array containing image variables.
    *
    * @return array
-   *   Randarable array contains the image.
+   *   Renderable array containing the image.
    */
-  protected function getRandarableImage(array $variables) {
+  protected function getRenderableImage(array $variables) {
     $image = [
       '#theme' => 'image_style',
       '#uri' => $this->imageDTO->getUri(),
