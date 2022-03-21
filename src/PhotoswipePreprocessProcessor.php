@@ -4,7 +4,7 @@ namespace Drupal\photoswipe;
 
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
-use Drupal\Core\Image\ImageFactory;
+use Drupal\Core\File\FileUrlGenerator;
 use Drupal\Core\Language\LanguageManagerInterface;
 use Drupal\Core\Logger\LoggerChannelFactoryInterface;
 use Drupal\Core\Render\RendererInterface;
@@ -59,6 +59,13 @@ class PhotoswipePreprocessProcessor implements ContainerInjectionInterface {
   protected $imageDTO;
 
   /**
+   * File url generator object.
+   *
+   * @var \Drupal\Core\File\FileUrlGenerator
+   */
+  protected $fileUrlGenerator;
+
+  /**
    * Constructs new PhotoswipePreprocessProcessor object.
    *
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager
@@ -71,19 +78,23 @@ class PhotoswipePreprocessProcessor implements ContainerInjectionInterface {
    *   Chanel factory.
    * @param \Drupal\Core\Render\RendererInterface $renderer
    *   Renderer.
+   * @param \Drupal\Core\File\FileUrlGenerator $fileUrlGenerator
+   *   File url generator object.
    */
   public function __construct(
     EntityTypeManagerInterface $entityTypeManager,
     Token $token,
     LanguageManagerInterface $languageManager,
     LoggerChannelFactoryInterface $channelFactory,
-    RendererInterface $renderer
+    RendererInterface $renderer,
+    FileUrlGenerator $fileUrlGenerator
   ) {
     $this->entityTypeManager = $entityTypeManager;
     $this->token = $token;
     $this->languageManager = $languageManager;
     $this->renderer = $renderer;
     $this->logger = $channelFactory->get('photoswipe');
+    $this->fileUrlGenerator = $fileUrlGenerator;
   }
 
   /**
@@ -95,7 +106,8 @@ class PhotoswipePreprocessProcessor implements ContainerInjectionInterface {
       $container->get('token'),
       $container->get('language_manager'),
       $container->get('logger.factory'),
-      $container->get('renderer')
+      $container->get('renderer'),
+      $container->get('file_url_generator'),
     );
   }
 
@@ -172,7 +184,7 @@ class PhotoswipePreprocessProcessor implements ContainerInjectionInterface {
             break;
           }
           $field_view = $entity->{$caption_setting}->view();
-          $caption = \Drupal::service('renderer')->render($field_view);
+          $caption = $this->renderer->render($field_view);
           break;
       }
     }
@@ -233,7 +245,7 @@ class PhotoswipePreprocessProcessor implements ContainerInjectionInterface {
       return $style->buildUrl($this->imageDTO->getUri());
     }
     else {
-      return \Drupal::service('file_url_generator')->generateAbsoluteString($this->imageDTO->getUri());
+      return $this->fileUrlGenerator->generateAbsoluteString($this->imageDTO->getUri());
     }
   }
 
