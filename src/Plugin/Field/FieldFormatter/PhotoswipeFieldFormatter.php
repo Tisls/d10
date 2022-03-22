@@ -9,9 +9,9 @@ use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Field\FormatterBase;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\image\Entity\ImageStyle;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\Entity\EntityFieldManagerInterface;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\photoswipe\PhotoswipeAssetsManagerInterface;
 
 /**
@@ -64,6 +64,13 @@ class PhotoswipeFieldFormatter extends FormatterBase {
   protected $includeHidden = TRUE;
 
   /**
+   * The image style storage.
+   *
+   * @var \Drupal\Core\Entity\EntityStorageInterface
+   */
+  protected $entityStorageImageStyle;
+
+  /**
    * {@inheritdoc}
    */
   public static function defaultSettings() {
@@ -103,6 +110,8 @@ class PhotoswipeFieldFormatter extends FormatterBase {
    *   The entity repository.
    * @param \Drupal\photoswipe\PhotoswipeAssetsManagerInterface $assets_manager
    *   The assets manager.
+   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager
+   *   The entity type manager.
    */
   public function __construct(
     $plugin_id,
@@ -115,9 +124,10 @@ class PhotoswipeFieldFormatter extends FormatterBase {
     ModuleHandlerInterface $module_handler,
     EntityFieldManagerInterface $entity_field_manager,
     EntityRepositoryInterface $entity_repository,
-    PhotoswipeAssetsManagerInterface $assets_manager
+    PhotoswipeAssetsManagerInterface $assets_manager,
+    EntityTypeManagerInterface $entityTypeManager
   ) {
-    parent::__construct($plugin_id, $plugin_definition, $field_definition, $settings, $label, $view_mode, $third_party_settings);
+    parent::__construct($plugin_id, $plugin_definition, $field_definition, $settings, $label, $view_mode, $third_party_settings, $entityTypeManager);
 
     $this->fieldDefinition = $field_definition;
     $this->settings = $settings;
@@ -128,6 +138,7 @@ class PhotoswipeFieldFormatter extends FormatterBase {
     $this->entityFieldManager = $entity_field_manager;
     $this->entityRepository = $entity_repository;
     $this->photoswipeAssetManager = $assets_manager;
+    $this->entityStorageImageStyle = $entityTypeManager->getStorage('image_style');
   }
 
   /**
@@ -145,7 +156,8 @@ class PhotoswipeFieldFormatter extends FormatterBase {
       $container->get('module_handler'),
       $container->get('entity_field.manager'),
       $container->get('entity.repository'),
-      $container->get('photoswipe.assets_manager')
+      $container->get('photoswipe.assets_manager'),
+      $container->get('entity_type.manager')
     );
   }
 
@@ -453,7 +465,7 @@ class PhotoswipeFieldFormatter extends FormatterBase {
     $style_ids[] = $this->getSetting('photoswipe_image_style');
     /** @var \Drupal\image\ImageStyleInterface $style */
     foreach ($style_ids as $style_id) {
-      if ($style_id && $style = ImageStyle::load($style_id)) {
+      if ($style_id && $style = $this->entityStorageImageStyle->load($style_id)) {
         // If this formatter uses a valid image style to display the image, add
         // the image style configuration entity as dependency of this formatter.
         $dependencies[$style->getConfigDependencyKey()][] = $style->getConfigDependencyName();
@@ -475,13 +487,13 @@ class PhotoswipeFieldFormatter extends FormatterBase {
     $style_ids['photoswipe_image_style'] = $this->getSetting('photoswipe_image_style');
     /** @var \Drupal\image\ImageStyleInterface $style */
     foreach ($style_ids as $name => $style_id) {
-      if (!empty($style_id) && $style = ImageStyle::load($style_id)) {
+      if (!empty($style_id) && $style = $this->entityStorageImageStyle->load($style_id)) {
         if (!empty($dependencies[$style->getConfigDependencyKey()][$style->getConfigDependencyName()])) {
           $replacement_id = $this->imageStyleStorage->getReplacementId($style_id);
           // If a valid replacement has been provided in the storage, replace
           // the image style with the replacement and signal that the formatter
           // plugin settings were updated.
-          if ($replacement_id && ImageStyle::load($replacement_id)) {
+          if ($replacement_id && $this->entityStorageImageStyle->load($replacement_id)) {
             $this->setSetting($name, $replacement_id);
             $changed = TRUE;
           }
