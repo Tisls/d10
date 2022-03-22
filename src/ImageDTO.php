@@ -3,7 +3,6 @@
 namespace Drupal\photoswipe;
 
 use Drupal\media\MediaInterface;
-use Drupal\media_entity\MediaInterface as MediaEntityInterface;
 
 /**
  * Contains image item.
@@ -99,7 +98,7 @@ class ImageDTO {
     $this->settings = $variables['display_settings'];
     // In case if entity is instance of Media use referenced field provided
     // specified by user.
-    $this->item = (($item = $variables['item']) && ($item->entity instanceof MediaInterface || $item->entity instanceof MediaEntityInterface)) && $item->entity->hasField($this->settings['photoswipe_reference_image_field'])
+    $this->item = (($item = $variables['item']) && ($item->entity instanceof MediaInterface)) && $item->entity->hasField($this->settings['photoswipe_reference_image_field'])
       ? $item->entity->get($this->settings['photoswipe_reference_image_field'])
       : $item;
 
