@@ -231,8 +231,10 @@ class PhotoswipeFieldFormatter extends FormatterBase {
       ],
     ];
     if ($this->moduleHandler->moduleExists('token')) {
+      // Get the field target type, e.g. 'file':
       $target_type = $this->fieldDefinition->getSetting('target_type');
-      $entity_type = $this->fieldDefinition->get('entity_type');
+      // Get the field parent entity type, e.g. 'node':
+      $entity_type = $this->fieldDefinition->getTargetEntityTypeId();
       $element['photoswipe_token_caption'] = [
         '#type' => 'fieldset',
         '#title' => $this->t('Replacement patterns'),
