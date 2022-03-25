@@ -73,3 +73,55 @@ photoswipe.settings:
         modal:
           type: boolean
           label: 'Modal'
+
+field.formatter.settings.photoswipe_field_formatter:
+  type: mapping
+  label: 'Photoswipe display format settings'
+  mapping:
+    photoswipe_node_style_first:
+      type: string
+      label: 'Photoswipe Node Style First'
+    photoswipe_node_style:
+      type: string
+      label: 'Photoswipe Node Style'
+    photoswipe_image_style:
+      type: string
+      label: 'Photoswipe Image Style'
+    photoswipe_reference_image_field:
+      type: string
+      label: 'Photoswipe Reference Image Field'
+    photoswipe_caption:
+      type: string
+      label: 'Photoswipe Caption'
+    photoswipe_caption_custom:
+      type: string
+      label: 'Photoswipe Caption Custom'
+    photoswipe_view_mode:
+      type: string
+      label: 'Photoswipe View Mode'
+
+field.formatter.settings.photoswipe_responsive_field_formatter:
+  type: mapping
+  label: 'Photoswipe responsive display format settings'
+  mapping:
+    photoswipe_node_style_first:
+      type: string
+      label: 'Photoswipe Node Style First'
+    photoswipe_node_style:
+      type: string
+      label: 'Photoswipe Node Style'
+    photoswipe_image_style:
+      type: string
+      label: 'Photoswipe Image Style'
+    photoswipe_reference_image_field:
+      type: string
+      label: 'Photoswipe Reference Image Field'
+    photoswipe_caption:
+      type: string
+      label: 'Photoswipe Caption'
+    photoswipe_caption_custom:
+      type: string
+      label: 'Photoswipe Caption Custom'
+    photoswipe_view_mode:
+      type: string
+      label: 'Photoswipe View Mode'
