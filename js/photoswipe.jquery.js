@@ -90,7 +90,7 @@
       var images = galleryElement.find('a.photoswipe');
       images.each(function (index) {
         var $image = $(this);
-        size = $image.data('size') ? $image.data('size').split('x') : ['', ''];
+        var size = $image.data('size') ? $image.data('size').split('x') : ['', ''];
         items.push(
           {
             src: $image.attr('href'),
