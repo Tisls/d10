@@ -2,6 +2,7 @@
 
 namespace Drupal\photoswipe;
 
+use Drupal\file\FileInterface;
 use Drupal\media\MediaInterface;
 
 /**
@@ -96,17 +97,22 @@ class ImageDTO {
    */
   public function __construct(array $variables) {
     $this->settings = $variables['display_settings'];
-    // In case if entity is instance of Media use referenced field provided
-    // specified by user.
-    $this->item = (($item = $variables['item']) && ($item->entity instanceof MediaInterface)) && $item->entity->hasField($this->settings['photoswipe_reference_image_field'])
-      ? $item->entity->get($this->settings['photoswipe_reference_image_field'])
-      : $item;
 
-    $this->alt = $this->item->alt ?: NULL;
-    $this->title = $this->item->title ?: NULL;
+    $this->entity = $variables['entity'];
+    $this->item = $variables['item'];
+
+    // If item is instance of Media.
+    if ($this->item->entity instanceof MediaInterface && $media = $this->item->entity) {
+      // If the photoswipe_reference_image_field setting is not configured,
+      // we get the source field.
+      $photoswipe_reference_image_field = $this->settings['photoswipe_reference_image_field'] ?: $this->getMediaSourceField($media);
+
+      $this->item = $media->get($photoswipe_reference_image_field);
+    }
 
     $this->uri = $this->item->entity->getFileUri();
-    $this->entity = $variables['entity'];
+    $this->alt = $this->item->alt ?: NULL;
+    $this->title = $this->item->title ?: NULL;
     $this->setDimensions([
       ImageDTO::HEIGHT => $this->item->height,
       ImageDTO::WIDTH => $this->item->width,
@@ -244,6 +250,21 @@ class ImageDTO {
    */
   public function getPath() {
     return $this->path;
+  }
+
+  /**
+   * Returns the source field name of the given media entity.
+   *
+   * @param \Drupal\media\MediaInterface $media
+   *   The media entity object.
+   *
+   * @return string
+   *   The media source field name.
+   */
+  protected function getMediaSourceField(MediaInterface $media) {
+    $media_source_configuration = $media->getSource()->getConfiguration();
+
+    return $media_source_configuration['source_field'];
   }
 
 }

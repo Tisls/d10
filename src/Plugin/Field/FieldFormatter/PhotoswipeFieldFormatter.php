@@ -505,4 +505,17 @@ class PhotoswipeFieldFormatter extends FormatterBase {
     return $changed;
   }
 
+  /**
+   * {@inheritdoc}
+   */
+  public static function isApplicable(FieldDefinitionInterface $field_definition) {
+    $field_type = $field_definition->getType();
+    if ($field_type === 'image' ||
+       ($field_type === 'entity_reference' && $field_definition->getSetting('target_type') === 'media')) {
+      return TRUE;
+    }
+
+    return FALSE;
+  }
+
 }
