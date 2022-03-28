@@ -13,7 +13,7 @@ use Drupal\Core\Field\FieldDefinitionInterface;
  * Provides formatter that supports responsive image.
  *
  * @FieldFormatter(
- *   id = "photoswipe_respoinsive_field_formatter",
+ *   id = "photoswipe_responsive_field_formatter",
  *   label = @Translation("Photoswipe Responsive"),
  *   field_types = {
  *     "entity_reference",

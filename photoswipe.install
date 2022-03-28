@@ -65,11 +65,13 @@ function photoswipe_requirements($phase) {
 }
 
 /**
- * Trigger cache clear.
+ * Reenable "Photoswipe responsive" formatters (display settings).
  *
- * Empty update function to trigger cache clear after changing field formatter
- * settings.
+ * Note, that with this update, all used "Photoswipe responsive" formatters
+ * (display settings), will NOT work anymore and need to be manually reenabled!
+ * For this, you need to enable another formatter for the relevant entities and
+ * then reenable the "Photoswipe responsive" formatter.
  */
-function photoswipe_update_7001() {
-  // Do nothing.
+function photoswipe_update_8313() {
+  \Drupal::messenger()->addStatus('IMPORTANT: If you\'re already using the newly introduced "Photoswipe RESPONSIVE" field formatter, you have to set them manually AGAIN after this update. Regular photoswipe formatter is NOT affected. For details see #3271648.');
 }
