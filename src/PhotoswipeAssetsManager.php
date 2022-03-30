@@ -24,7 +24,7 @@ class PhotoswipeAssetsManager implements PhotoswipeAssetsManagerInterface {
    *
    * @var bool
    */
-  protected $attached;
+  protected $attached = FALSE;
 
   /**
    * Photoswipe config.
@@ -77,6 +77,10 @@ class PhotoswipeAssetsManager implements PhotoswipeAssetsManagerInterface {
    * {@inheritdoc}
    */
   public function attach(array &$element) {
+    // Ensure this is only attached once, even if called multiple times.
+    if ($this->isAttached()) {
+      return;
+    }
 
     // Add the library of Photoswipe assets.
     $element['#attached']['library'][] = 'photoswipe/photoswipe';
@@ -101,7 +105,7 @@ class PhotoswipeAssetsManager implements PhotoswipeAssetsManagerInterface {
    * {@inheritdoc}
    */
   public function isAttached() {
-    return $this->attached;
+    return !empty($this->attached);
   }
 
 }
