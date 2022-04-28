@@ -77,10 +77,17 @@ class PhotoswipeAssetsManager implements PhotoswipeAssetsManagerInterface {
    * {@inheritdoc}
    */
   public function attach(array &$element) {
+    // @todo: IMPORTANT: THIS DOES NOT WORK! DO NOT ENABLE!
+    // @see https://www.drupal.org/project/photoswipe/issues/3272485
+    // @see https://git.drupalcode.org/project/photoswipe/-/merge_requests/39/diffs
+    // which is BROKEN.
+    // Help to find out why this doesn't work and if we can / should
+    // make this working or remove the singleton!
+
     // Ensure this is only attached once, even if called multiple times.
-    if ($this->isAttached()) {
-      return;
-    }
+    // if ($this->isAttached()) {
+      // return;
+    // }
 
     // Add the library of Photoswipe assets.
     $element['#attached']['library'][] = 'photoswipe/photoswipe';
