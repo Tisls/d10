@@ -128,7 +128,6 @@ class PhotoswipeFieldFormatter extends FormatterBase {
     EntityStorageInterface $image_style_storage
   ) {
     parent::__construct($plugin_id, $plugin_definition, $field_definition, $settings, $label, $view_mode, $third_party_settings, $image_style_storage);
-
     $this->fieldDefinition = $field_definition;
     $this->settings = $settings;
     $this->label = $label;

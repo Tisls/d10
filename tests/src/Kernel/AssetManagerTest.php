@@ -43,7 +43,6 @@ class AssetManagerTest extends KernelTestBase {
     $manager = \Drupal::service('theme.manager');
     $manager->setActiveTheme(\Drupal::service('theme.initialization')->initTheme('photoswipe_test_theme'));
 
-
     $dummy = [
       '#markup' => 'dummy',
     ];
