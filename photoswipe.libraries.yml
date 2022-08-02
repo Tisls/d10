@@ -30,6 +30,6 @@ photoswipe.init:
     js/photoswipe.jquery.js: {}
   dependencies:
     - core/jquery
-    - core/jquery.once
     - core/drupal
+    - core/once
     - core/drupalSettings

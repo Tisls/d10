@@ -35,7 +35,7 @@
         }
 
         // loop through all gallery elements and bind events
-        $galleries.once('photoswipe').each(function (index) {
+        $(once('photoswipe', $galleries)).each(function (index) {
           var $gallery = $(this);
           $gallery.attr('data-pswp-uid', index + 1);
           // Definitely prevent doble event binding on AJAX
@@ -122,7 +122,7 @@
         return { x: tpos.left, y: tpos.top, w: tw };
       }
 
-      // Ensures we have items (.photoswipe element) before initializing 
+      // Ensures we have items (.photoswipe element) before initializing
       // PhotoSwipe so to make PhotoSwipe get along with Blazy, Slick, etc.
       if (items.length > 0) {
         // Pass data to PhotoSwipe and initialize it
