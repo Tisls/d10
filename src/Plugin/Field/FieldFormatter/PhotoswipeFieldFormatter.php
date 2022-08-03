@@ -79,7 +79,7 @@ class PhotoswipeFieldFormatter extends FormatterBase {
       'photoswipe_node_style' => '',
       'photoswipe_image_style' => '',
       'photoswipe_reference_image_field' => '',
-      'photoswipe_caption' => '',
+      'photoswipe_caption' => 'title',
       'photoswipe_caption_custom' => '',
       'photoswipe_view_mode' => '',
     ] + parent::defaultSettings();
