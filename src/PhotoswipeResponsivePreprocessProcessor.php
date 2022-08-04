@@ -64,7 +64,7 @@ class PhotoswipeResponsivePreprocessProcessor extends PhotoswipePreprocessProces
     }
 
     // Render as a standard image if an image style is not given or "hide".
-    if (empty($image['#style_name']) || $image['#style_name'] === 'hide') {
+    if ($image['#style_name'] === 'hide') {
       $image['#theme'] = 'image';
     }
 
