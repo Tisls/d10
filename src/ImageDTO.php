@@ -2,7 +2,6 @@
 
 namespace Drupal\photoswipe;
 
-use Drupal\file\FileInterface;
 use Drupal\media\MediaInterface;
 
 /**

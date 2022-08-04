@@ -66,8 +66,8 @@ function photoswipe_help($route_name, RouteMatchInterface $route_match) {
       $output = '';
       $output .= '<h3>' . t('About') . '</h3>';
       $output .= '<p>' . t('<a href=":url">Photoswipe</a> provides a nice javascript-based display for photo galleries, very sleek on mobile browsers.', [
-          ':url' => 'http://www.photoswipe.com/',
-        ]) . '</p>';
+        ':url' => 'http://www.photoswipe.com/',
+      ]) . '</p>';
       return $output;
   }
 }
@@ -95,13 +95,25 @@ function photoswipe_library_info_alter(&$libraries, $module) {
     $library_file_finder = \Drupal::service('library.libraries_directory_file_finder');
     $current_libraries = [
       'photoswipe' => [
-        'js' => ['photoswipe/dist/photoswipe.min.js', 'photoswipe/dist/photoswipe-ui-default.min.js'],
-        'css' => ['photoswipe/dist/photoswipe.css', 'photoswipe/dist/default-skin/default-skin.css'],
+        'js' => [
+          'photoswipe/dist/photoswipe.min.js',
+          'photoswipe/dist/photoswipe-ui-default.min.js',
+        ],
+        'css' => [
+          'photoswipe/dist/photoswipe.css',
+          'photoswipe/dist/default-skin/default-skin.css',
+        ],
       ],
       'photoswipe.dev' => [
-        'js' => ['photoswipe/dist/photoswipe.js', 'photoswipe/dist/photoswipe-ui-default.js'],
-        'css' => ['photoswipe/dist/photoswipe.css', 'photoswipe/dist/default-skin/default-skin.css'],
-      ]
+        'js' => [
+          'photoswipe/dist/photoswipe.js',
+          'photoswipe/dist/photoswipe-ui-default.js',
+        ],
+        'css' => [
+          'photoswipe/dist/photoswipe.css',
+          'photoswipe/dist/default-skin/default-skin.css',
+        ],
+      ],
     ];
     foreach ($current_libraries as $current_library_id => $current_library_type) {
       if (isset($libraries[$current_library_id])) {
@@ -130,9 +142,9 @@ function photoswipe_library_info_alter(&$libraries, $module) {
                 $libraries[$current_library_id][$library_type_id] = array_merge(
                   [
                     '/' . $path =>
-                      ($current_library_id === 'photoswipe.dev')
-                        ? []
-                        : ['minified' => TRUE],
+                    ($current_library_id === 'photoswipe.dev')
+                    ? []
+                    : ['minified' => TRUE],
                   ], $libraries[$current_library_id][$library_type_id]);
               }
             }

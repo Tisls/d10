@@ -139,8 +139,7 @@ class ImageFileTest extends WebDriverTestBase {
   // public function testPhotoswipeFieldFormatterSettingsExist() {
   //   $session = $this->assertSession();
   //   $page = $this->getSession()->getPage();
-
-  //   $field_settings = ['alt_field_required' => 0];
+  // $field_settings = ['alt_field_required' => 0];
   //   $this->createImageField('field_test', 'node', 'article', [
   //     'uri_scheme' => 'public',
   //     'required' => 'true',
@@ -223,9 +222,8 @@ class ImageFileTest extends WebDriverTestBase {
     $session->elementAttributeContains('css', 'img[src*="image-test.png"]', 'width', '40');
     $session->elementAttributeContains('css', 'img[src*="image-test.png"]', 'height', '20');
     // @todo Check the photoswipe functionalities here.
-
     $this->createScreenshot(\Drupal::root() . '/sites/default/files/simpletest/ImageFileTest-testPhotoswipeFieldFormatterOnNodeDisplay-beforeClick.png');
-    // Open the photoswipe layer
+    // Open the photoswipe layer.
     $this->getSession()->getPage()->find('css', 'a[href*="image-test.png"].photoswipe')->click();
     $session->waitForElementVisible('css', '.pswp');
     $this->createScreenshot(\Drupal::root() . '/sites/default/files/simpletest/ImageFileTest-testPhotoswipeFieldFormatterOnNodeDisplay-afterClick.png');
@@ -280,7 +278,7 @@ class ImageFileTest extends WebDriverTestBase {
   //   $session->elementAttributeContains('css', 'img[src*="image-test.png"]', 'width', '40');
   //   $session->elementAttributeContains('css', 'img[src*="image-test.png"]', 'height', '20');
   //   // @todo Check the photoswipe functionalities here.
-  // }
+  // }.
 
   /**
    * Tests the photoswipe formatter on node display with two image fields.
