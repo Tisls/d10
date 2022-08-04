@@ -79,7 +79,7 @@ class PhotoswipeFieldFormatter extends FormatterBase {
       'photoswipe_node_style' => '',
       'photoswipe_image_style' => '',
       'photoswipe_reference_image_field' => '',
-      'photoswipe_caption' => 'title',
+      'photoswipe_caption' => 'alt',
       'photoswipe_caption_custom' => '',
       'photoswipe_view_mode' => '',
     ] + parent::defaultSettings();
@@ -167,29 +167,29 @@ class PhotoswipeFieldFormatter extends FormatterBase {
     $image_styles_hide = $this->includeHidden
       ? $this->getImageStyles() + ['hide' => $this->t('Hide (do not display image)')]
       : $this->getImageStyles();
-    $element['photoswipe_node_style_first'] = [
-      '#title' => $this->t('Node image style for first image'),
-      '#type' => 'select',
-      '#default_value' => $this->getSetting('photoswipe_node_style_first'),
-      '#empty_option' => $this->t('No special style.'),
-      '#options' => $image_styles_hide,
-      '#description' => $this->t('Image style to use in the content for the first image.'),
-    ];
     $element['photoswipe_node_style'] = [
-      '#title' => $this->t('Node image style'),
+      '#title' => $this->t('Thumbnail image style'),
       '#type' => 'select',
       '#default_value' => $this->getSetting('photoswipe_node_style'),
-      '#empty_option' => $this->t('None (original image)'),
+      '#empty_option' => $this->t('None (Original image)'),
       '#options' => $image_styles_hide,
-      '#description' => $this->t('Image style to use in the node.'),
+      '#description' => $this->t('Select the image style for the thumbnail display. Clicking a thumbnail will open the Photoswipe layer.'),
+    ];
+    $element['photoswipe_node_style_first'] = [
+      '#title' => $this->t('Override first image thumbnail style'),
+      '#type' => 'select',
+      '#default_value' => $this->getSetting('photoswipe_node_style_first'),
+      '#empty_option' => $this->t('No override (use default thumbnail image style)'),
+      '#options' => $image_styles_hide,
+      '#description' => $this->t('Sometimes the first image should be displayed differently, e.g. larger than other images. This option overrides the first image style.'),
     ];
     $element['photoswipe_image_style'] = [
-      '#title' => $this->t('Photoswipe image style'),
+      '#title' => $this->t('Photoswipe modal image style'),
       '#type' => 'select',
       '#default_value' => $this->getSetting('photoswipe_image_style'),
-      '#empty_option' => $this->t('None (original image)'),
+      '#empty_option' => $this->t('None (Original image)'),
       '#options' => $this->getPhotoSwipeStyles(),
-      '#description' => $this->t('Image style to use in the Photoswipe.'),
+      '#description' => $this->t('Select the image style to display the image in the Photoswipe modal.'),
     ];
 
     // Set our caption options.
@@ -216,7 +216,7 @@ class PhotoswipeFieldFormatter extends FormatterBase {
       '#type' => 'select',
       '#default_value' => $this->getSetting('photoswipe_caption'),
       '#options' => $caption_options,
-      '#description' => $this->t('Field that should be used for the caption.'),
+      '#description' => $this->t('Field that should be used for the caption displayed in the Photoswipe modal.'),
     ];
 
     $element['photoswipe_caption_custom'] = [
@@ -350,30 +350,30 @@ class PhotoswipeFieldFormatter extends FormatterBase {
     // Styles could be lost because of enabled/disabled modules that defines
     // their styles in code.
     if (isset($image_styles[$this->getSetting('photoswipe_node_style')])) {
-      $summary[] = $this->t('Node image style: @style', ['@style' => $image_styles[$this->getSetting('photoswipe_node_style')]]);
+      $summary[] = $this->t('Thumbnail image style: @style', ['@style' => $image_styles[$this->getSetting('photoswipe_node_style')]]);
     }
     elseif ($this->getSetting('photoswipe_node_style') == 'hide') {
-      $summary[] = $this->t('Node image style: Hide');
+      $summary[] = $this->t('Thumbnail image style: Hidden');
     }
     else {
-      $summary[] = $this->t('Node image style: Original image');
+      $summary[] = $this->t('Thumbnail image style: Original image');
     }
 
     if (isset($image_styles[$this->getSetting('photoswipe_node_style_first')])) {
-      $summary[] = $this->t('Node image style of first image: @style', ['@style' => $image_styles[$this->getSetting('photoswipe_node_style_first')]]);
+      $summary[] = $this->t('First image thumbnail style override: @style', ['@style' => $image_styles[$this->getSetting('photoswipe_node_style_first')]]);
     }
     elseif ($this->getSetting('photoswipe_node_style_first') == 'hide') {
-      $summary[] = $this->t('Node image style of first image: Hide');
+      $summary[] = $this->t('First image thumbnail style override: Hidden');
     }
     else {
-      $summary[] = $this->t('Node image style of first image: Original image');
+      $summary[] = $this->t('No special first image thumbnail style.');
     }
 
     if (isset($photoswipe_styles[$this->getSetting('photoswipe_image_style')])) {
-      $summary[] = $this->t('Photoswipe image style: @style', ['@style' => $photoswipe_styles[$this->getSetting('photoswipe_image_style')]]);
+      $summary[] = $this->t('Photoswipe modal image style: @style', ['@style' => $photoswipe_styles[$this->getSetting('photoswipe_image_style')]]);
     }
     else {
-      $summary[] = $this->t('Photoswipe image style: Original image');
+      $summary[] = $this->t('Photoswipe modal image style: Original image');
     }
 
     if ($this->getSetting('photoswipe_reference_image_field')) {

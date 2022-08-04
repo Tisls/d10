@@ -123,9 +123,9 @@ class MediaReferenceTest extends WebDriverTestBase {
     $session->elementExists('css', 'select[id*="edit-fields-media-image-settings-edit-form-settings-photoswipe-node-style-first"]');
     $session->elementExists('css', 'select[id*="edit-fields-media-image-settings-edit-form-settings-photoswipe-node-style"]:not([id*=first])');
     $session->elementExists('css', 'select[id*="edit-fields-media-image-settings-edit-form-settings-photoswipe-image-style"]');
-    $session->elementTextEquals('css', 'select[id*="edit-fields-media-image-settings-edit-form-settings-photoswipe-node-style-first"] > option[selected="selected"]', 'No special style.');
-    $session->elementTextEquals('css', 'select[id*="edit-fields-media-image-settings-edit-form-settings-photoswipe-node-style"]:not([id*=first]) > option[selected="selected"]', 'None (original image)');
-    $session->elementTextEquals('css', 'select[id*="edit-fields-media-image-settings-edit-form-settings-photoswipe-image-style"] > option[selected="selected"]', 'None (original image)');
+    $session->elementTextEquals('css', 'select[id*="edit-fields-media-image-settings-edit-form-settings-photoswipe-node-style-first"] > option[selected="selected"]', 'No override (use default thumbnail image style)');
+    $session->elementTextEquals('css', 'select[id*="edit-fields-media-image-settings-edit-form-settings-photoswipe-node-style"]:not([id*=first]) > option[selected="selected"]', 'None (Original image)');
+    $session->elementTextEquals('css', 'select[id*="edit-fields-media-image-settings-edit-form-settings-photoswipe-image-style"] > option[selected="selected"]', 'None (Original image)');
     // @todo Why does the following select not have a selected field?:
     // $session->elementTextEquals('css', 'select[id*=edit-fields-media-image-settings-edit-form-settings-photoswipe-caption] > option[selected="selected"]', 'Image title tag');
     // Check if changing a setting and submitting the display,
