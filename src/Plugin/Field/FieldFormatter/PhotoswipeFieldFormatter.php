@@ -2,6 +2,7 @@
 
 namespace Drupal\photoswipe\Plugin\Field\FieldFormatter;
 
+use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityRepositoryInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Field\FieldConfigInterface;
@@ -441,15 +442,18 @@ class PhotoswipeFieldFormatter extends FormatterBase {
     }
 
     foreach ($items as $delta => $item) {
-      $elements[$delta] = [
-        '#theme' => 'photoswipe_image_formatter',
-        '#item' => $item,
-        '#entity' => $items->getEntity(),
-        '#display_settings' => $settings,
-        '#delta' => $delta,
-      ];
+      // Check if the entity is an Entity (e.g. wasn't deleted) and the entity
+      // is accessible:
+      if ($item->entity instanceof EntityInterface && $item->entity->access('view')) {
+        $elements[$delta] = [
+          '#theme' => 'photoswipe_image_formatter',
+          '#item' => $item,
+          '#entity' => $items->getEntity(),
+          '#display_settings' => $settings,
+          '#delta' => $delta,
+        ];
+      }
     }
-
     return $elements;
   }
 
@@ -513,7 +517,6 @@ class PhotoswipeFieldFormatter extends FormatterBase {
        ($field_type === 'entity_reference' && $field_definition->getSetting('target_type') === 'media')) {
       return TRUE;
     }
-
     return FALSE;
   }
 

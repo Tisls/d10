@@ -201,6 +201,107 @@ class MediaReferenceTest extends WebDriverTestBase {
   }
 
   /**
+   * Tests if the access permissions work correctly for an anonymous user.
+   */
+  public function testPhotoswipeFieldFormatterNodeDisplayPermissionAnonymous() {
+    $session = $this->assertSession();
+    $page = $this->getSession()->getPage();
+
+    $this->createMediaType('image', ['id' => 'image', 'new_revision' => TRUE]);
+    $this->createEntityReferenceField('node', 'article', 'media_image', 'media_image', 'media', 'default', ['target_bundles' => ['image']]);
+    $this->createMediaImage();
+
+    /** @var \Drupal\Core\Entity\EntityDisplayRepositoryInterface $display_repository */
+    $display_repository = \Drupal::service('entity_display.repository');
+    $display_repository->getFormDisplay('node', 'article')
+      ->setComponent('media_image', [
+        'type' => 'entity_reference_autocomplete',
+        'settings' => [],
+      ])
+      ->save();
+    $display_repository->getViewDisplay('node', 'article')
+      ->setComponent('media_image', [
+        'type' => 'photoswipe_field_formatter',
+        'settings' => [],
+      ])
+      ->save();
+    // Create the node with a test file uploaded:
+    $this->drupalGet('node/add/article');
+    $title = 'My test content';
+    $page->fillField('title[0][value]', $title);
+    $page->fillField('edit-media-image-0-target-id', 'image-test.png');
+    $page->pressButton('edit-submit');
+    $session->pageTextContains("Article {$title} has been created.");
+    $this->getSession()->wait(5000, 'typeof window.jQuery == "function"');
+    $this->drupalGet('/node/1');
+    // Check if the image is loaded with the correct defaults and wrappers:
+    $session->elementExists('css', 'img[src*="image-test.png"]');
+    $session->elementExists('css', 'a[href*="image-test.png"].photoswipe > img[src*="image-test.png"]');
+    $session->elementExists('css', '.photoswipe-gallery.photoswipe-gallery--fallback-wrapper > a[href*="image-test.png"].photoswipe > img[src*="image-test.png"]');
+    // Unpublish media_entity:
+    $this->drupalGet('/media/1/edit');
+    $page->uncheckField('edit-status-value');
+    $page->pressButton('edit-submit');
+    // Logout:
+    $this->drupalLogout();
+    // Check if image is not rendered anymore:
+    $session->elementNotExists('css', 'img[src*="image-test.png"]');
+    $session->elementNotExists('css', 'a[href*="image-test.png"].photoswipe > img[src*="image-test.png"]');
+    $session->elementNotExists('css', '.photoswipe-gallery.photoswipe-gallery--fallback-wrapper > a[href*="image-test.png"].photoswipe > img[src*="image-test.png"]');
+  }
+
+  /**
+   * Tests if the access permissions are correct for an authenticated user.
+   */
+  public function testPhotoswipeFieldFormatterNodeDisplayPermissionAuthenticated() {
+    $session = $this->assertSession();
+    $page = $this->getSession()->getPage();
+
+    $this->createMediaType('image', ['id' => 'image', 'new_revision' => TRUE]);
+    $this->createEntityReferenceField('node', 'article', 'media_image', 'media_image', 'media', 'default', ['target_bundles' => ['image']]);
+    $this->createMediaImage();
+
+    /** @var \Drupal\Core\Entity\EntityDisplayRepositoryInterface $display_repository */
+    $display_repository = \Drupal::service('entity_display.repository');
+    $display_repository->getFormDisplay('node', 'article')
+      ->setComponent('media_image', [
+        'type' => 'entity_reference_autocomplete',
+        'settings' => [],
+      ])
+      ->save();
+    $display_repository->getViewDisplay('node', 'article')
+      ->setComponent('media_image', [
+        'type' => 'photoswipe_field_formatter',
+        'settings' => [],
+      ])
+      ->save();
+    // Create the node with a test file uploaded:
+    $this->drupalGet('node/add/article');
+    $title = 'My test content';
+    $page->fillField('title[0][value]', $title);
+    $page->fillField('edit-media-image-0-target-id', 'image-test.png');
+    $page->pressButton('edit-submit');
+    $session->pageTextContains("Article {$title} has been created.");
+    $this->getSession()->wait(5000, 'typeof window.jQuery == "function"');
+    $this->drupalGet('/node/1');
+    // Check if the image is loaded with the correct defaults and wrappers:
+    $session->elementExists('css', 'img[src*="image-test.png"]');
+    $session->elementExists('css', 'a[href*="image-test.png"].photoswipe > img[src*="image-test.png"]');
+    $session->elementExists('css', '.photoswipe-gallery.photoswipe-gallery--fallback-wrapper > a[href*="image-test.png"].photoswipe > img[src*="image-test.png"]');
+    // Unpublish media_entity:
+    $this->drupalGet('/media/1/edit');
+    $page->uncheckField('edit-status-value');
+    $page->pressButton('edit-submit');
+    // Logout and login as authenticated user:
+    $this->drupalLogout();
+    $this->drupalLogin($this->user);
+    // Check if image is not rendered anymore:
+    $session->elementNotExists('css', 'img[src*="image-test.png"]');
+    $session->elementNotExists('css', 'a[href*="image-test.png"].photoswipe > img[src*="image-test.png"]');
+    $session->elementNotExists('css', '.photoswipe-gallery.photoswipe-gallery--fallback-wrapper > a[href*="image-test.png"].photoswipe > img[src*="image-test.png"]');
+  }
+
+  /**
    * Tests the photoswipe formatter on node preview.
    */
   // Public function testPhotoswipeFieldFormatterOnNodePreview() {
@@ -256,7 +357,7 @@ class MediaReferenceTest extends WebDriverTestBase {
   //   $session->elementAttributeContains('css', 'img[src*="image-test.png"]', 'width', '40');
   //   $session->elementAttributeContains('css', 'img[src*="image-test.png"]', 'height', '20');
   //   // @todo Check the photoswipe functionalities here.
-  // }
+  // }.
 
   /**
    * Tests the photoswipe formatter on node display with two media fields.
