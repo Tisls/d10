@@ -36,8 +36,6 @@ class PhotoswipeResponsiveFieldFormatter extends PhotoswipeFieldFormatter {
   public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
     $instance = parent::create($container, $configuration, $plugin_id, $plugin_definition);
     $instance->entityManager = $container->get('entity_type.manager');
-    // Don't need to use "hidden" style for responsive images.
-    $instance->includeHidden = FALSE;
 
     return $instance;
   }
