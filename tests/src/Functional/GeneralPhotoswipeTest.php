@@ -90,7 +90,7 @@ class GeneralPhotoswipeTest extends BrowserTestBase {
     // (The library shouldn't be loaded in the front page):
     $this->drupalGet('<front>');
     $session->statusCodeEquals(200);
-    $session->elementNotExists('css', 'link[href*="//cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.0/photoswipe.css"]');
+    $session->elementNotExists('css', 'link[href*="//cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.3/photoswipe.css"]');
     // Go to the settings page and enable loading on non admin pages:
     $this->drupalGet('/admin/config/media/photoswipe');
     $session->statusCodeEquals(200);
@@ -99,7 +99,7 @@ class GeneralPhotoswipeTest extends BrowserTestBase {
     // Go to the front page again and check if the css file is loaded
     // (The library shouldn't be loaded in the front page):
     $this->drupalGet('<front>');
-    $session->elementNotExists('css', 'link[href*="//cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.0/photoswipe.css"]');
+    $session->elementNotExists('css', 'link[href*="//cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.3/photoswipe.css"]');
     $session->statusCodeEquals(200);
   }
 
