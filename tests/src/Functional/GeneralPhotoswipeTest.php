@@ -103,4 +103,37 @@ class GeneralPhotoswipeTest extends BrowserTestBase {
     $session->statusCodeEquals(200);
   }
 
+  /**
+   * Tests that the status page is getting the library installed version.
+   */
+  public function testHookRequirements(): void {
+    $session = $this->assertSession();
+    $session->statusCodeEquals(200);
+    // Get Drupal Status Page.
+    $this->drupalGet('/admin/reports/status');
+    // Verify that the Photoswipe plugin is shown on the page.
+    $session->pageTextContains('Photoswipe plugin');
+
+    /** @var \Drupal\Core\Asset\LibrariesDirectoryFileFinder $library_file_finder */
+    $library_file_finder = \Drupal::service('library.libraries_directory_file_finder');
+    $library_path = $library_file_finder->find('photoswipe');
+    if ($library_path !== FALSE) {
+      // Library installed in libraries dir :)
+      // So we get library version from photoswipe.json file.
+      $package_json_content = file_get_contents(DRUPAL_ROOT . '/libraries/photoswipe/photoswipe.json');
+      $package_json = json_decode($package_json_content, FALSE);
+      $installed_version = $package_json->version;
+    }
+    else {
+      // Library from CDN :(
+      /** @var \Drupal\Core\Asset\LibraryDiscoveryInterface $library_discovery */
+      $library_discovery = \Drupal::service('library.discovery');
+      $library_definition = $library_discovery->getLibraryByName('photoswipe', 'photoswipe');
+      $installed_version = $library_definition['version'];
+    }
+    // Verify that the Photoswipe version (either local or CDN) is shown on the page.
+    $session->pageTextContains($installed_version);
+
+  }
+
 }

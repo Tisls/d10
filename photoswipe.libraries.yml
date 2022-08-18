@@ -1,5 +1,6 @@
 photoswipe:
   remote: https://github.com/dimsemenov/PhotoSwipe/archive/v4.1.0.zip
+  version: 4.1.0
   license:
     name: MIT
     gpl-compatible: false
@@ -14,6 +15,7 @@ photoswipe:
 # Development Version
 photoswipe.dev:
   remote: https://github.com/dimsemenov/PhotoSwipe/archive/v4.1.0.zip
+  version: 4.1.0
   license:
     name: MIT
     gpl-compatible: false
