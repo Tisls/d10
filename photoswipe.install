@@ -99,3 +99,16 @@ function photoswipe_requirements($phase) {
 function photoswipe_update_8313() {
   \Drupal::messenger()->addStatus('IMPORTANT: If you\'re already using the newly introduced "Photoswipe RESPONSIVE" field formatter, you have to set them manually AGAIN after this update. Regular photoswipe formatter is NOT affected. For details see #3271648.');
 }
+
+/**
+ * Remove unwanted config value from settings form: actions, form_build_id,
+ * form_token, form_id.
+ */
+function photoswipe_update_8314() {
+  \Drupal::configFactory()->getEditable('photoswipe.settings')
+      ->clear('actions')
+      ->clear('form_build_id')
+      ->clear('form_token')
+      ->clear('form_id')
+      ->save();
+}
