@@ -2,7 +2,7 @@ name: Photoswipe test theme
 type: theme
 description: 'Theme for testing the photoswipe module'
 base theme: classy
-core_version_requirement: ^8.8 || ^9
+core_version_requirement: ^9.3 || ^10
 
 regions:
   content: Content

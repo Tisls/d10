@@ -2,4 +2,4 @@ name: 'Photoswipe assets test'
 description: 'The module provides ability to test photoswipe assets manager.'
 type: module
 package: Testing
-core_version_requirement: ^9.3
+core_version_requirement: ^9.3 || ^10
